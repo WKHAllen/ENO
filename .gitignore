@@ -32,8 +32,7 @@ e2e/*.map
 
 ### Go ###
 # Binaries for programs and plugins
-eno
-eno.exe
+*.exe
 *.exe~
 *.dll
 *.so
