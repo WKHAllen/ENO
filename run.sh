@@ -1,4 +1,4 @@
 #!/bin/bash
 
-chmod +x ./bin/eno
-./bin/eno
+chmod +x ./build/eno
+./build/eno

@@ -1,3 +1,3 @@
 @echo off
 
-bin\eno.exe
+build\eno.exe
