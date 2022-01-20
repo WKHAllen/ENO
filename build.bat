@@ -8,13 +8,14 @@ rem Build frontend
 cd webui
 cmd /c npm run build
 cd ..
+xcopy /s /i /y webui\dist\eno build\web
 
 rem Check if frontend only
 if "%1"=="frontend" goto :eof
 
 rem Build backend
 :backend
-cmd /c go build -o bin
+cmd /c go build -o build
 
 rem End of file
 :eof

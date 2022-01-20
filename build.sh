@@ -6,12 +6,14 @@ build_frontend()
   cd webui
   npm run build
   cd ..
+  mkdir -p ./build/web
+  cp -r ./webui/dist/eno/* ./build/web
 }
 
 # Build backend
 build_backend()
 {
-  go build -o bin
+  go build -o build
 }
 
 main()
