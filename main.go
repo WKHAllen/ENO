@@ -32,6 +32,7 @@ func main() {
 	// Set up routing
 	router := gin.Default()
 	router.LoadHTMLGlob("build/web/index.html")
+	src.LoadRoutes(router, "/api")
 	router.Use(static.Serve("/", static.LocalFile("build/web", true)))
 	router.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
@@ -59,7 +60,7 @@ func main() {
 	w.Run()
 
 	// Kill HTTP server
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
 		panic(err)
