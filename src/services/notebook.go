@@ -73,6 +73,7 @@ func cleanFileName(name string) string {
 	return reg.ReplaceAllString(strings.ReplaceAll(name, " ", "_"), "-")
 }
 
+// encryptNotebook encrypts and returns a notebook.
 func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook {
 	notebookContentJson, err := json.Marshal(notebook.Content)
 	util.CheckError(err)
@@ -89,7 +90,7 @@ func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook
 	_, err = io.ReadFull(rand.Reader, nonce)
 	util.CheckError(err)
 
-	encryptedNotebookContent := aesgcm.Seal(nil, nonce, notebookContentJson, nil)
+	encryptedNotebookContent := aesgcm.Seal(nonce, nonce, notebookContentJson, nil)
 
 	return &EncryptedNotebook{
 		Name: notebook.Name,
@@ -98,6 +99,39 @@ func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook
 		EditTime: notebook.EditTime,
 		Content: encryptedNotebookContent,
 	}
+}
+
+// decryptNotebook decrypts and returns a notebook.
+func decryptNotebook(notebook *EncryptedNotebook, key string) (*DecryptedNotebook, error) {
+	keyHash := sha256.Sum256([]byte(key))
+
+	block, err := aes.NewCipher(keyHash[:])
+	util.CheckError(err)
+
+	aesgmc, err := cipher.NewGCM(block)
+	util.CheckError(err)
+
+	nonceSize := aesgmc.NonceSize()
+	nonce, encryptedContent := notebook.Content[:nonceSize], notebook.Content[nonceSize:]
+
+	decryptedNotebookContentJson, err := aesgmc.Open(nil, nonce, encryptedContent, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var decryptedNotebookContent NotebookContent
+	err = json.Unmarshal(decryptedNotebookContentJson, &decryptedNotebookContent)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DecryptedNotebook{
+		Name: notebook.Name,
+		Description: notebook.Description,
+		CreateTime: notebook.CreateTime,
+		EditTime: notebook.EditTime,
+		Content: decryptedNotebookContent,
+	}, nil
 }
 
 /*
@@ -192,9 +226,24 @@ OpenNotebook attempts to open a specified notebook.
 func OpenNotebook(name string, key string) (*DecryptedNotebook, error) {
 	ensureNotebooksDirExists()
 
-	panic("UNIMPLEMENTED")
+	filename := cleanFileName(name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
-	return &DecryptedNotebook{}, nil
+	if _, err := os.Stat(filepath); errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("the specified notebook does not exist")
+	}
+
+	encryptedNotebookJson, err := os.ReadFile(filepath)
+	util.CheckError(err)
+
+	var encryptedNotebook EncryptedNotebook
+	err = json.Unmarshal(encryptedNotebookJson, &encryptedNotebook)
+	util.CheckError(err)
+
+	notebook, err := decryptNotebook(&encryptedNotebook, key)
+	util.CheckError(err)
+
+	return notebook, nil
 }
 
 /*
