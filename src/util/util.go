@@ -1,12 +1,8 @@
 package src
 
-import (
-	"log"
-)
-
-// CheckError checks if an error has occurred, and if so, calls log.Fatal.
+// CheckError checks if an error has occurred, and if so, panics.
 func CheckError(err error) {
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }

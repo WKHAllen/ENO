@@ -17,6 +17,8 @@ import (
 	util "eno/src/util"
 )
 
+const notebooksDir = "build/notebooks"
+const notebookFileExt = ".eno"
 const notebookNameMinLength = 1
 const notebookNameMaxLength = 64
 const notebookDescriptionMinLength = 0
@@ -57,10 +59,8 @@ type DecryptedNotebook struct {
 
 // ensureNotebooksDirExists will create the notebooks directory if it does not exist.
 func ensureNotebooksDirExists() {
-	path := "build/notebooks"
-
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.Mkdir(path, os.ModeDir)
+	if _, err := os.Stat(notebooksDir); os.IsNotExist(err) {
+		err := os.Mkdir(notebooksDir, os.ModeDir)
 		util.CheckError(err)
 	}
 }
@@ -107,23 +107,23 @@ CreateNotebook creates a new notebook in the file system.
 	description: the notebook's description.
 	key:         the key to use to encrypt the notebook.
 
-	returns:     the absolute path to the created notebook, or an error.
+	returns:     the created notebook, or an error.
 */
 func CreateNotebook(name string, description string, key string) (*DecryptedNotebook, error) {
 	if len(name) < notebookNameMinLength || len(name) > notebookNameMaxLength {
-		return nil, fmt.Errorf("notebook name must be between %v and %v characters in length", notebookNameMinLength, notebookNameMaxLength)
+		return nil, fmt.Errorf("notebook name must be between %d and %d characters in length", notebookNameMinLength, notebookNameMaxLength)
 	}
 	if len(description) < notebookDescriptionMinLength || len(description) > notebookDescriptionMaxLength {
-		return nil, fmt.Errorf("notebook description must be between %v and %v characters in length", notebookDescriptionMinLength, notebookDescriptionMaxLength)
+		return nil, fmt.Errorf("notebook description must be between %d and %d characters in length", notebookDescriptionMinLength, notebookDescriptionMaxLength)
 	}
 	if len(key) < notebookKeyMinLength || len(key) > notebookKeyMaxLength {
-		return nil, fmt.Errorf("notebook key must be between %v and %v characters in length", notebookKeyMinLength, notebookKeyMaxLength)
+		return nil, fmt.Errorf("notebook key must be between %d and %d characters in length", notebookKeyMinLength, notebookKeyMaxLength)
 	}
 
 	ensureNotebooksDirExists()
 
 	filename := cleanFileName(name)
-	filepath := fmt.Sprintf("build/notebooks/%v", filename)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
 	if _, err := os.Stat(filepath); !errors.Is(err, os.ErrNotExist) {
 		return nil, fmt.Errorf("the specified notebook name is too similar to the name of another notebook")
@@ -153,14 +153,32 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 /*
 ListNotebooks lists all notebooks inside the notebooks directory.
 
-	returns: the names of all known notebooks.
+	returns: all encrypted notebooks.
 */
-func ListNotebooks() []string {
+func ListNotebooks() []*EncryptedNotebook {
 	ensureNotebooksDirExists()
 
-	panic("UNIMPLEMENTED")
+	var notebooks []*EncryptedNotebook
 
-	return []string{}
+	files, err := os.ReadDir(notebooksDir)
+	util.CheckError(err)
+
+	for _, file := range files {
+		if !file.IsDir() && strings.HasSuffix(file.Name(), notebookFileExt) {
+			var notebook EncryptedNotebook
+
+			notebookPath := fmt.Sprintf("%s/%s", notebooksDir, file.Name())
+			notebookJson, err := os.ReadFile(notebookPath)
+			util.CheckError(err)
+
+			err = json.Unmarshal(notebookJson, &notebook)
+			util.CheckError(err)
+
+			notebooks = append(notebooks, &notebook)
+		}
+	}
+
+	return notebooks
 }
 
 /*
