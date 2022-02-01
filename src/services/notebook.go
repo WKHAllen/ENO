@@ -1,12 +1,28 @@
 package services
 
 import (
-	"log"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	util "eno/src/util"
 )
+
+const notebookNameMinLength = 1
+const notebookNameMaxLength = 64
+const notebookDescriptionMinLength = 0
+const notebookDescriptionMaxLength = 256
+const notebookKeyMinLength = 8
+const notebookKeyMaxLength = 256
 
 // NotebookEntry represents a single entry within a notebook.
 type NotebookEntry struct {
@@ -45,20 +61,43 @@ func ensureNotebooksDirExists() {
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.Mkdir(path, os.ModeDir)
-		if err != nil {
-			log.Fatal(err)
-		}
+		util.CheckError(err)
 	}
 }
 
 // cleanFileName alters a notebook's name so it can be used for a file name.
 func cleanFileName(name string) string {
 	reg, err := regexp.Compile("[^a-zA-Z0-9-_]+")
-	if err != nil {
-		log.Fatal(err)
-	}
+	util.CheckError(err)
 
 	return reg.ReplaceAllString(strings.ReplaceAll(name, " ", "_"), "-")
+}
+
+func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook {
+	notebookContentJson, err := json.Marshal(notebook.Content)
+	util.CheckError(err)
+
+	keyHash := sha256.Sum256([]byte(key))
+
+	block, err := aes.NewCipher(keyHash[:])
+	util.CheckError(err)
+
+	aesgcm, err := cipher.NewGCM(block)
+	util.CheckError(err)
+
+	nonce := make([]byte, aesgcm.NonceSize())
+	_, err = io.ReadFull(rand.Reader, nonce)
+	util.CheckError(err)
+
+	encryptedNotebookContent := aesgcm.Seal(nil, nonce, notebookContentJson, nil)
+
+	return &EncryptedNotebook{
+		Name: notebook.Name,
+		Description: notebook.Description,
+		CreateTime: notebook.CreateTime,
+		EditTime: notebook.EditTime,
+		Content: encryptedNotebookContent,
+	}
 }
 
 /*
@@ -71,13 +110,44 @@ CreateNotebook creates a new notebook in the file system.
 	returns:     the absolute path to the created notebook, or an error.
 */
 func CreateNotebook(name string, description string, key string) (*DecryptedNotebook, error) {
+	if len(name) < notebookNameMinLength || len(name) > notebookNameMaxLength {
+		return nil, fmt.Errorf("notebook name must be between %v and %v characters in length", notebookNameMinLength, notebookNameMaxLength)
+	}
+	if len(description) < notebookDescriptionMinLength || len(description) > notebookDescriptionMaxLength {
+		return nil, fmt.Errorf("notebook description must be between %v and %v characters in length", notebookDescriptionMinLength, notebookDescriptionMaxLength)
+	}
+	if len(key) < notebookKeyMinLength || len(key) > notebookKeyMaxLength {
+		return nil, fmt.Errorf("notebook key must be between %v and %v characters in length", notebookKeyMinLength, notebookKeyMaxLength)
+	}
+
 	ensureNotebooksDirExists()
 
 	filename := cleanFileName(name)
+	filepath := fmt.Sprintf("build/notebooks/%v", filename)
 
-	panic("UNIMPLEMENTED")
+	if _, err := os.Stat(filepath); !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("the specified notebook name is too similar to the name of another notebook")
+	}
 
-	return &DecryptedNotebook{}, nil
+	notebook := &DecryptedNotebook{
+		Name: name,
+		Description: description,
+		CreateTime: time.Now(),
+		EditTime: time.Time{},
+		Content: NotebookContent{
+			Entries: []NotebookEntry{},
+		},
+	}
+
+	encryptedNotebook := encryptNotebook(notebook, key)
+
+	encryptedNotebookJson, err := json.Marshal(encryptedNotebook)
+	util.CheckError(err)
+
+	err = os.WriteFile(filepath, encryptedNotebookJson, 0755)
+	util.CheckError(err)
+
+	return notebook, nil
 }
 
 /*
@@ -120,7 +190,7 @@ SetNotebookName changes a notebook's name and file name.
 func SetNotebookName(name string, newName string) error {
 	ensureNotebooksDirExists()
 
-	filename := cleanFileName(name)
+	// filename := cleanFileName(name)
 
 	panic("UNIMPLEMENTED")
 
