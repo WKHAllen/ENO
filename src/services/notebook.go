@@ -6,8 +6,10 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"regexp"
 	"strings"
@@ -58,7 +60,7 @@ type DecryptedNotebook struct {
 
 // ensureNotebooksDirExists will create the notebooks directory if it does not exist.
 func ensureNotebooksDirExists() {
-	if _, err := os.Stat(notebooksDir); os.IsNotExist(err) {
+	if _, err := os.Stat(notebooksDir); errors.Is(err, fs.ErrNotExist) {
 		err := os.Mkdir(notebooksDir, os.ModeDir)
 		util.CheckError(err)
 	}
@@ -158,7 +160,7 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
-	if _, err := os.Stat(filepath); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath); !errors.Is(err, fs.ErrNotExist) {
 		return nil, fmt.Errorf("the specified notebook name is too similar to the name of another notebook")
 	}
 
@@ -228,7 +230,7 @@ func OpenNotebook(name string, key string) (*DecryptedNotebook, error) {
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
-	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath); errors.Is(err, fs.ErrNotExist) {
 		return nil, fmt.Errorf("the specified notebook does not exist")
 	}
 
