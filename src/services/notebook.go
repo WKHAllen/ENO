@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -159,7 +158,7 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
-	if _, err := os.Stat(filepath); !errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath); !os.IsNotExist(err) {
 		return nil, fmt.Errorf("the specified notebook name is too similar to the name of another notebook")
 	}
 
@@ -229,7 +228,7 @@ func OpenNotebook(name string, key string) (*DecryptedNotebook, error) {
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
-	if _, err := os.Stat(filepath); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(filepath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("the specified notebook does not exist")
 	}
 
