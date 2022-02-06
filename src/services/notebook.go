@@ -74,6 +74,41 @@ func cleanFileName(name string) string {
 	return reg.ReplaceAllString(strings.ReplaceAll(name, " ", "_"), "-")
 }
 
+// readNotebook reads a notebook file into memory.
+func readNotebook(name string) (*EncryptedNotebook, error) {
+	ensureNotebooksDirExists()
+
+	filename := cleanFileName(name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
+	if _, err := os.Stat(filepath); errors.Is(err, fs.ErrNotExist) {
+		return nil, fmt.Errorf("the specified notebook does not exist")
+	}
+
+	notebookJson, err := os.ReadFile(filepath)
+	util.CheckError(err)
+
+	var notebook EncryptedNotebook
+	err = json.Unmarshal(notebookJson, &notebook)
+	util.CheckError(err)
+
+	return &notebook, nil
+}
+
+// writeNotebook writes a notebook to a file.
+func writeNotebook(notebook *EncryptedNotebook) {
+	ensureNotebooksDirExists()
+
+	filename := cleanFileName(notebook.Name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
+	notebookJson, err := json.Marshal(notebook)
+	util.CheckError(err)
+
+	err = os.WriteFile(filepath, notebookJson, 0755)
+	util.CheckError(err)
+}
+
 // encryptNotebook encrypts and returns a notebook.
 func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook {
 	notebookContentJson, err := json.Marshal(notebook.Content)
@@ -225,23 +260,12 @@ OpenNotebook attempts to open a specified notebook.
 	returns: the decrypted notebook, or an error.
 */
 func OpenNotebook(name string, key string) (*DecryptedNotebook, error) {
-	ensureNotebooksDirExists()
-
-	filename := cleanFileName(name)
-	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
-
-	if _, err := os.Stat(filepath); errors.Is(err, fs.ErrNotExist) {
-		return nil, fmt.Errorf("the specified notebook does not exist")
+	encryptedNotebook, err := readNotebook(name)
+	if err != nil {
+		return nil, err
 	}
 
-	encryptedNotebookJson, err := os.ReadFile(filepath)
-	util.CheckError(err)
-
-	var encryptedNotebook EncryptedNotebook
-	err = json.Unmarshal(encryptedNotebookJson, &encryptedNotebook)
-	util.CheckError(err)
-
-	notebook, err := decryptNotebook(&encryptedNotebook, key)
+	notebook, err := decryptNotebook(encryptedNotebook, key)
 	util.CheckError(err)
 
 	return notebook, nil
@@ -256,11 +280,19 @@ SetNotebookName changes a notebook's name and file name.
 	returns: an error, if one occurs.
 */
 func SetNotebookName(name string, newName string) error {
-	ensureNotebooksDirExists()
+	notebook, err := readNotebook(name)
+	if err != nil {
+		return err
+	}
 
-	// filename := cleanFileName(name)
+	oldFilename := cleanFileName(notebook.Name)
+	oldFilepath := fmt.Sprintf("%s/%s%s", notebooksDir, oldFilename, notebookFileExt)
+	notebook.Name = newName
 
-	panic("UNIMPLEMENTED")
+	writeNotebook(notebook)
+
+	err = os.Remove(oldFilepath)
+	util.CheckError(err)
 
 	return nil
 }
@@ -274,9 +306,14 @@ SetNotebookDescription changes a notebook's description.
 	returns:        an error, if one occurs.
 */
 func SetNotebookDescription(name string, newDescription string) error {
-	ensureNotebooksDirExists()
+	notebook, err := readNotebook(name)
+	if err != nil {
+		return err
+	}
 
-	panic("UNIMPLEMENTED")
+	notebook.Description = newDescription
+
+	writeNotebook(notebook)
 
 	return nil
 }
