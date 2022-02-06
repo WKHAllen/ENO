@@ -327,9 +327,16 @@ DeleteNotebook deletes a notebook from the file system and requires the notebook
 	returns: an error, if one occurs.
 */
 func DeleteNotebook(name string, key string) error {
-	ensureNotebooksDirExists()
+	_, err := OpenNotebook(name, key)
+	if err != nil {
+		return err
+	}
 
-	panic("UNIMPLEMENTED")
+	filename := cleanFileName(name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
+	err = os.Remove(filepath)
+	util.CheckError(err)
 
 	return nil
 }
