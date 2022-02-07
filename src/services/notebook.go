@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -86,45 +87,74 @@ func readNotebook(name string) (*EncryptedNotebook, error) {
 	}
 
 	notebookJson, err := os.ReadFile(filepath)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred reading notebook file (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while opening the notebook, check the logs for more details")
+	}
 
 	var notebook EncryptedNotebook
 	err = json.Unmarshal(notebookJson, &notebook)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred parsing notebook file JSON (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while opening the notebook, check the logs for more details")
+	}
 
 	return &notebook, nil
 }
 
 // writeNotebook writes a notebook to a file.
-func writeNotebook(notebook *EncryptedNotebook) {
+func writeNotebook(notebook *EncryptedNotebook) error {
 	ensureNotebooksDirExists()
 
 	filename := cleanFileName(notebook.Name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
 	notebookJson, err := json.Marshal(notebook)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred stringifying notebook file JSON (%s): %s", filepath, err)
+		return fmt.Errorf("an unexpected error occurred while saving the notebook, check the logs for more details")
+	}
 
 	err = os.WriteFile(filepath, notebookJson, 0755)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred writing notebook file (%s): %s", filepath, err)
+		return fmt.Errorf("an unexpected error occurred while saving the notebook, check the logs for more details")
+	}
+
+	return nil
 }
 
 // encryptNotebook encrypts and returns a notebook.
-func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook {
+func encryptNotebook(notebook *DecryptedNotebook, key string) (*EncryptedNotebook, error) {
+	filename := cleanFileName(notebook.Name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
 	notebookContentJson, err := json.Marshal(notebook.Content)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred stringifying notebook file JSON (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while encrypting the notebook, check the logs for more details")
+	}
 
 	keyHash := sha256.Sum256([]byte(key))
 
 	block, err := aes.NewCipher(keyHash[:])
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred creating AES cipher for encrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while encrypting the notebook, check the logs for more details")
+	}
 
 	aesgcm, err := cipher.NewGCM(block)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred wrapping AES cipher in GCM for encrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while encrypting the notebook, check the logs for more details")
+	}
 
 	nonce := make([]byte, aesgcm.NonceSize())
 	_, err = io.ReadFull(rand.Reader, nonce)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred reading random bytes for encrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while encrypting the notebook, check the logs for more details")
+	}
 
 	encryptedNotebookContent := aesgcm.Seal(nonce, nonce, notebookContentJson, nil)
 
@@ -134,31 +164,42 @@ func encryptNotebook(notebook *DecryptedNotebook, key string) *EncryptedNotebook
 		CreateTime: notebook.CreateTime,
 		EditTime: notebook.EditTime,
 		Content: encryptedNotebookContent,
-	}
+	}, nil
 }
 
 // decryptNotebook decrypts and returns a notebook.
 func decryptNotebook(notebook *EncryptedNotebook, key string) (*DecryptedNotebook, error) {
+	filename := cleanFileName(notebook.Name)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
 	keyHash := sha256.Sum256([]byte(key))
 
 	block, err := aes.NewCipher(keyHash[:])
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred creating AES cipher for decrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while decrypting the notebook, check the logs for more details")
+	}
 
 	aesgmc, err := cipher.NewGCM(block)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred wrapping AES cipher in GCM for decrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while decrypting the notebook, check the logs for more details")
+	}
 
 	nonceSize := aesgmc.NonceSize()
 	nonce, encryptedContent := notebook.Content[:nonceSize], notebook.Content[nonceSize:]
 
 	decryptedNotebookContentJson, err := aesgmc.Open(nil, nonce, encryptedContent, nil)
 	if err != nil {
-		return nil, err
+		log.Printf("Error occurred decrypting notebook (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while decrypting the notebook, check the logs for more details")
 	}
 
 	var decryptedNotebookContent NotebookContent
 	err = json.Unmarshal(decryptedNotebookContentJson, &decryptedNotebookContent)
 	if err != nil {
-		return nil, err
+		log.Printf("Error occurred parsing notebook file JSON after decrypting (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while decrypting the notebook, check the logs for more details")
 	}
 
 	return &DecryptedNotebook{
@@ -214,13 +255,22 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 		},
 	}
 
-	encryptedNotebook := encryptNotebook(notebook, key)
+	encryptedNotebook, err := encryptNotebook(notebook, key)
+	if err != nil {
+		return nil, err
+	}
 
 	encryptedNotebookJson, err := json.Marshal(encryptedNotebook)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred stringifying notebook file JSON (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while creating the notebook, check the logs for more details")
+	}
 
 	err = os.WriteFile(filepath, encryptedNotebookJson, 0755)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred writing notebook file (%s): %s", filepath, err)
+		return nil, fmt.Errorf("an unexpected error occurred while creating the notebook, check the logs for more details")
+	}
 
 	return notebook, nil
 }
@@ -230,13 +280,16 @@ ListNotebooks lists all notebooks inside the notebooks directory.
 
 	returns: all encrypted notebooks.
 */
-func ListNotebooks() []*EncryptedNotebook {
+func ListNotebooks() ([]*EncryptedNotebook, error) {
 	ensureNotebooksDirExists()
 
 	var notebooks []*EncryptedNotebook
 
 	files, err := os.ReadDir(notebooksDir)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred fetching list of existing notebooks: %s", err)
+		return nil, fmt.Errorf("an unexpected error occurred while locating existing notebooks, check the logs for more details")
+	}
 
 	for _, file := range files {
 		if !file.IsDir() && strings.HasSuffix(file.Name(), notebookFileExt) {
@@ -244,16 +297,22 @@ func ListNotebooks() []*EncryptedNotebook {
 
 			notebookPath := fmt.Sprintf("%s/%s", notebooksDir, file.Name())
 			notebookJson, err := os.ReadFile(notebookPath)
-			util.CheckError(err)
+			if err != nil {
+				log.Printf("Error occurred reading notebook file (%s): %s", notebookPath, err)
+				return nil, fmt.Errorf("an unexpected error occurred while opening the notebooks, check the logs for more details")
+			}
 
 			err = json.Unmarshal(notebookJson, &notebook)
-			util.CheckError(err)
+			if err != nil {
+				log.Printf("Error occurred parsing notebook file JSON (%s): %s", notebookPath, err)
+				return nil, fmt.Errorf("an unexpected error occurred while opening the notebooks, check the logs for more details")
+			}
 
 			notebooks = append(notebooks, &notebook)
 		}
 	}
 
-	return notebooks
+	return notebooks, nil
 }
 
 /*
@@ -271,7 +330,9 @@ func OpenNotebook(name string, key string) (*DecryptedNotebook, error) {
 	}
 
 	notebook, err := decryptNotebook(encryptedNotebook, key)
-	util.CheckError(err)
+	if err != nil {
+		return nil, err
+	}
 
 	return notebook, nil
 }
@@ -294,10 +355,16 @@ func SetNotebookName(name string, newName string) error {
 	oldFilepath := fmt.Sprintf("%s/%s%s", notebooksDir, oldFilename, notebookFileExt)
 	notebook.Name = newName
 
-	writeNotebook(notebook)
+	err = writeNotebook(notebook)
+	if err != nil {
+		return err
+	}
 
 	err = os.Remove(oldFilepath)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred deleting old notebook file (%s): %s", oldFilepath, err)
+		return fmt.Errorf("an unexpected error occurred while renaming the notebook, check the logs for more details")
+	}
 
 	return nil
 }
@@ -318,7 +385,10 @@ func SetNotebookDescription(name string, newDescription string) error {
 
 	notebook.Description = newDescription
 
-	writeNotebook(notebook)
+	err = writeNotebook(notebook)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -341,7 +411,10 @@ func DeleteNotebook(name string, key string) error {
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
 	err = os.Remove(filepath)
-	util.CheckError(err)
+	if err != nil {
+		log.Printf("Error occurred deleting the notebook file (%s): %s", filepath, err)
+		return fmt.Errorf("an unexpected error occurred while deleting the notebook, check the logs for more details")
+	}
 
 	return nil
 }

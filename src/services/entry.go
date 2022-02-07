@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -47,8 +48,15 @@ func CreateNotebookEntry(notebookName string, notebookKey string, entryName stri
 	decryptedNotebook.Content.Entries[entryName] = &newEntry
 	updateNotebookEditTime(decryptedNotebook)
 
-	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
-	writeNotebook(encryptedNotebook)
+	encryptedNotebook, err = encryptNotebook(decryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	err = writeNotebook(encryptedNotebook)
+	if err != nil {
+		return nil, err
+	}
 
 	return &newEntry, nil
 }
@@ -137,8 +145,15 @@ func SetNotebookEntryName(notebookName string, notebookKey string, entryName str
 	decryptedNotebook.Content.Entries[newEntryName] = entry
 	updateNotebookEntryEditTime(decryptedNotebook, newEntryName)
 
-	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
-	writeNotebook(encryptedNotebook)
+	encryptedNotebook, err = encryptNotebook(decryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	err = writeNotebook(encryptedNotebook)
+	if err != nil {
+		return nil, err
+	}
 
 	return entry, nil
 }
@@ -171,8 +186,15 @@ func SetNotebookEntryContent(notebookName string, notebookKey string, entryName 
 	decryptedNotebook.Content.Entries[entryName].Content = newContent
 	updateNotebookEntryEditTime(decryptedNotebook, entryName)
 
-	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
-	writeNotebook(encryptedNotebook)
+	encryptedNotebook, err = encryptNotebook(decryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	err = writeNotebook(encryptedNotebook)
+	if err != nil {
+		return nil, err
+	}
 
 	return decryptedNotebook.Content.Entries[entryName], nil
 }
@@ -188,6 +210,9 @@ SearchNotebookEntries searches through a notebook's entries for query matches.
 	returns:      the matched notebook entries as a mapping with entry names as keys, or an error.
 */
 func SearchNotebookEntries(notebookName string, notebookKey string, query string, regexSearch bool) (map[string]*NotebookEntry, error) {
+	filename := cleanFileName(notebookName)
+	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
+
 	encryptedNotebook, err := readNotebook(notebookName)
 	if err != nil {
 		return nil, err
@@ -216,12 +241,14 @@ func SearchNotebookEntries(notebookName string, notebookKey string, query string
 		} else {
 			nameMatch, err := regexp.MatchString(query, entryName)
 			if err != nil {
-				return nil, err
+				log.Printf("Error occurred performing notebook entry name regex search (%s): %s", filepath, err)
+				return nil, fmt.Errorf("an unexpected error occurred while searching the notebook, check the logs for more details")
 			}
 
 			contentMatch, err := regexp.MatchString(query, entry.Content)
 			if err != nil {
-				return nil, err
+				log.Printf("Error occurred performing notebook entry content regex search (%s): %s", filepath, err)
+				return nil, fmt.Errorf("an unexpected error occurred while searching the notebook, check the logs for more details")
 			}
 
 			if nameMatch || contentMatch {
@@ -260,8 +287,15 @@ func DeleteNotebookEntry(notebookName string, notebookKey string, entryName stri
 	delete(decryptedNotebook.Content.Entries, entryName)
 	updateNotebookEditTime(decryptedNotebook)
 
-	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
-	writeNotebook(encryptedNotebook)
+	encryptedNotebook, err = encryptNotebook(decryptedNotebook, notebookKey)
+	if err != nil {
+		return err
+	}
+
+	err = writeNotebook(encryptedNotebook)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
