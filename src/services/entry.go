@@ -76,9 +76,21 @@ GetNotebookEntry gets an entry from the notebook.
 	returns:      the notebook entry, or an error.
 */
 func GetNotebookEntry(notebookName string, notebookKey string, entryName string) (*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if entry, ok := decryptedNotebook.Content.Entries[entryName]; ok {
+		return &entry, nil
+	} else {
+		return nil, fmt.Errorf("an entry with the specified name does not exist in this notebook")
+	}
 }
 
 /*
