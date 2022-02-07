@@ -37,7 +37,7 @@ type NotebookEntry struct {
 
 // NotebookContent represents the decrypted content of a notebook.
 type NotebookContent struct {
-	Entries map[string]NotebookEntry `json:"entries"`
+	Entries map[string]*NotebookEntry `json:"entries"`
 }
 
 // EncryptedNotebook represents an encrypted notebook.
@@ -170,6 +170,11 @@ func decryptNotebook(notebook *EncryptedNotebook, key string) (*DecryptedNoteboo
 	}, nil
 }
 
+// updateNotebookEditTime updates a notebook's edited timestamp
+func updateNotebookEditTime(notebook *DecryptedNotebook) {
+	notebook.EditTime = time.Now()
+}
+
 /*
 CreateNotebook creates a new notebook in the file system.
 
@@ -205,7 +210,7 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 		CreateTime: time.Now(),
 		EditTime: time.Time{},
 		Content: NotebookContent{
-			Entries: make(map[string]NotebookEntry),
+			Entries: make(map[string]*NotebookEntry),
 		},
 	}
 

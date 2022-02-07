@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
-// updateNotebookEditTime updates a notebook's edited timestamp
-func updateNotebookEditTime(notebook *DecryptedNotebook) {
-	notebook.EditTime = time.Now()
+// updateNotebookEntryEditTime updates a notebook entry's edited timestamp
+func updateNotebookEntryEditTime(notebook *DecryptedNotebook, entryName string) {
+	notebook.Content.Entries[entryName].EditTime = time.Now()
+	updateNotebookEditTime(notebook)
 }
 
 /*
@@ -41,7 +42,7 @@ func CreateNotebookEntry(notebookName string, notebookKey string, entryName stri
 		return nil, fmt.Errorf("an entry with the specified name already exists in this notebook")
 	}
 
-	decryptedNotebook.Content.Entries[entryName] = newEntry
+	decryptedNotebook.Content.Entries[entryName] = &newEntry
 	updateNotebookEditTime(decryptedNotebook)
 
 	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
@@ -58,7 +59,7 @@ ListNotebookEntries lists all entries in a notebook.
 
 	returns:      the list of notebook entries as a mapping with entry names as keys, or an error.
 */
-func ListNotebookEntries(notebookName string, notebookKey string) (map[string]NotebookEntry, error) {
+func ListNotebookEntries(notebookName string, notebookKey string) (map[string]*NotebookEntry, error) {
 	encryptedNotebook, err := readNotebook(notebookName)
 	if err != nil {
 		return nil, err
@@ -93,7 +94,7 @@ func GetNotebookEntry(notebookName string, notebookKey string, entryName string)
 	}
 
 	if entry, ok := decryptedNotebook.Content.Entries[entryName]; ok {
-		return &entry, nil
+		return entry, nil
 	} else {
 		return nil, fmt.Errorf("an entry with the specified name does not exist in this notebook")
 	}
@@ -110,9 +111,34 @@ SetNotebookEntryName changes the name of an entry in a notebook.
 	returns:      the notebook entry, or an error.
 */
 func SetNotebookEntryName(notebookName string, notebookKey string, entryName string, newEntryName string) (*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, ok := decryptedNotebook.Content.Entries[entryName]; !ok {
+		return nil, fmt.Errorf("an entry with the specified name does not exist in this notebook")
+	}
+
+	if _, ok := decryptedNotebook.Content.Entries[newEntryName]; ok {
+		return nil, fmt.Errorf("an entry with the specified new name already exists in this notebook")
+	}
+
+	entry := decryptedNotebook.Content.Entries[entryName]
+	entry.Name = newEntryName
+	delete(decryptedNotebook.Content.Entries, entryName)
+	decryptedNotebook.Content.Entries[newEntryName] = entry
+	updateNotebookEntryEditTime(decryptedNotebook, newEntryName)
+
+	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
+	writeNotebook(encryptedNotebook)
+
+	return entry, nil
 }
 
 /*
