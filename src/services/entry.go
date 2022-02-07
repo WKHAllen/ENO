@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+// updateNotebookEditTime updates a notebook's edited timestamp
+func updateNotebookEditTime(notebook *DecryptedNotebook) {
+	notebook.EditTime = time.Now()
+}
+
 /*
 CreateNotebookEntry creates an entry in a notebook.
 
@@ -37,6 +42,7 @@ func CreateNotebookEntry(notebookName string, notebookKey string, entryName stri
 	}
 
 	decryptedNotebook.Content.Entries[entryName] = newEntry
+	updateNotebookEditTime(decryptedNotebook)
 
 	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
 	writeNotebook(encryptedNotebook)
