@@ -2,6 +2,8 @@ package services
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -183,12 +185,52 @@ SearchNotebookEntries searches through a notebook's entries for query matches.
 	query:        the query string.
 	regexSearch:  whether the search is a regex search.
 
-	returns:      the matched notebook entries, or an error.
+	returns:      the matched notebook entries as a mapping with entry names as keys, or an error.
 */
-func SearchNotebookEntries(notebookName string, notebookKey string, query string, regexSearch bool) ([]*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+func SearchNotebookEntries(notebookName string, notebookKey string, query string, regexSearch bool) (map[string]*NotebookEntry, error) {
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	matches := make(map[string]*NotebookEntry)
+
+	if query == "" {
+		return matches, nil
+	}
+
+	for entryName, entry := range decryptedNotebook.Content.Entries {
+		if !regexSearch {
+			entryNameLower := strings.ToLower(entryName)
+			entryContentLower := strings.ToLower(entry.Content)
+			queryLower := strings.ToLower(query)
+
+			if strings.Contains(entryNameLower, queryLower) || strings.Contains(entryContentLower, queryLower) {
+				matches[entryName] = entry
+			}
+		} else {
+			nameMatch, err := regexp.MatchString(query, entryName)
+			if err != nil {
+				return nil, err
+			}
+
+			contentMatch, err := regexp.MatchString(query, entry.Content)
+			if err != nil {
+				return nil, err
+			}
+
+			if nameMatch || contentMatch {
+				matches[entryName] = entry
+			}
+		}
+	}
+
+	return matches, nil
 }
 
 /*
