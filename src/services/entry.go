@@ -243,7 +243,25 @@ DeleteNotebookEntry deletes an entry in a notebook.
 	returns:      an error, if one occurs.
 */
 func DeleteNotebookEntry(notebookName string, notebookKey string, entryName string) error {
-	panic("UNIMPLEMENTED")
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return err
+	}
+
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return err
+	}
+
+	if _, ok := decryptedNotebook.Content.Entries[entryName]; !ok {
+		return fmt.Errorf("an entry with the specified name does not exist in this notebook")
+	}
+
+	delete(decryptedNotebook.Content.Entries, entryName)
+	updateNotebookEditTime(decryptedNotebook)
+
+	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
+	writeNotebook(encryptedNotebook)
 
 	return nil
 }
