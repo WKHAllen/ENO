@@ -1,5 +1,10 @@
 package services
 
+import (
+	"fmt"
+	"time"
+)
+
 /*
 CreateNotebookEntry creates an entry in a notebook.
 
@@ -10,9 +15,33 @@ CreateNotebookEntry creates an entry in a notebook.
 	returns:      the new notebook entry, or an error.
 */
 func CreateNotebookEntry(notebookName string, notebookKey string, entryName string) (*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	newEntry := NotebookEntry{
+		Name: entryName,
+		CreateTime: time.Now(),
+		EditTime: time.Time{},
+		Content: "",
+	}
+
+	if _, ok := decryptedNotebook.Content.Entries[entryName]; ok {
+		return nil, fmt.Errorf("an entry with the specified name already exists in this notebook")
+	}
+
+	decryptedNotebook.Content.Entries[entryName] = newEntry
+
+	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
+	writeNotebook(encryptedNotebook)
+
+	return &newEntry, nil
 }
 
 /*
