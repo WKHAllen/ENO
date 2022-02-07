@@ -152,9 +152,27 @@ SetNotebookEntryContent sets the content of an entry in a notebook.
 	returns:      the notebook entry, or an error.
 */
 func SetNotebookEntryContent(notebookName string, notebookKey string, entryName string, newContent string) (*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, ok := decryptedNotebook.Content.Entries[entryName]; !ok {
+		return nil, fmt.Errorf("an entry with the specified name does not exist in this notebook")
+	}
+
+	decryptedNotebook.Content.Entries[entryName].Content = newContent
+	updateNotebookEntryEditTime(decryptedNotebook, entryName)
+
+	encryptedNotebook = encryptNotebook(decryptedNotebook, notebookKey)
+	writeNotebook(encryptedNotebook)
+
+	return decryptedNotebook.Content.Entries[entryName], nil
 }
 
 /*
