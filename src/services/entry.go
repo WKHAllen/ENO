@@ -50,12 +50,20 @@ ListNotebookEntries lists all entries in a notebook.
 	notebookName: the notebook's name.
 	notebookKey:  key to encrypt/decrypt the notebook.
 
-	returns:      the list of notebook entries, or an error.
+	returns:      the list of notebook entries as a mapping with entry names as keys, or an error.
 */
-func ListNotebookEntries(notebookName string, notebookKey string) ([]*NotebookEntry, error) {
-	panic("UNIMPLEMENTED")
+func ListNotebookEntries(notebookName string, notebookKey string) (map[string]NotebookEntry, error) {
+	encryptedNotebook, err := readNotebook(notebookName)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	decryptedNotebook, err := decryptNotebook(encryptedNotebook, notebookKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return decryptedNotebook.Content.Entries, nil
 }
 
 /*
