@@ -77,8 +77,6 @@ func cleanFileName(name string) string {
 
 // readNotebook reads a notebook file into memory.
 func readNotebook(name string) (*EncryptedNotebook, error) {
-	ensureNotebooksDirExists()
-
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
@@ -104,8 +102,6 @@ func readNotebook(name string) (*EncryptedNotebook, error) {
 
 // writeNotebook writes a notebook to a file.
 func writeNotebook(notebook *EncryptedNotebook) error {
-	ensureNotebooksDirExists()
-
 	filename := cleanFileName(notebook.Name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
@@ -236,8 +232,6 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 		return nil, fmt.Errorf("notebook key must be between %d and %d characters in length", notebookKeyMinLength, notebookKeyMaxLength)
 	}
 
-	ensureNotebooksDirExists()
-
 	filename := cleanFileName(name)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 
@@ -281,8 +275,6 @@ ListNotebooks lists all notebooks inside the notebooks directory.
 	returns: all encrypted notebooks.
 */
 func ListNotebooks() ([]*EncryptedNotebook, error) {
-	ensureNotebooksDirExists()
-
 	var notebooks []*EncryptedNotebook
 
 	files, err := os.ReadDir(notebooksDir)
