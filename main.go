@@ -2,7 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
+	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -11,7 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/webview/webview"
 
-	"eno/src"
+	src "eno/src"
+	util "eno/src/util"
 )
 
 func main() {
@@ -24,7 +29,20 @@ func main() {
 	host := "localhost"
 	port := 42607
 	address := fmt.Sprintf("%s://%s:%d", protocol, host, port)
+	logsDir := "build/logs"
+	logFile := fmt.Sprintf("%s/%s", logsDir, "full.log")
 	os.Setenv("DEBUG", fmt.Sprint(debug))
+
+	// Set up logging
+	if _, err := os.Stat(logsDir); errors.Is(err, fs.ErrNotExist) {
+		err := os.Mkdir(logsDir, os.ModeDir)
+		util.CheckError(err)
+	}
+	f, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	util.CheckError(err)
+	defer f.Close()
+	wrt := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(wrt)
 
 	// Force Gin's console colors
 	gin.ForceConsoleColor()
