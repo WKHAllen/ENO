@@ -50,7 +50,7 @@ func main() {
 	// Set up routing
 	router := gin.Default()
 	router.LoadHTMLGlob("build/web/index.html")
-	src.LoadRoutes(router, "/api")
+	src.LoadRoutes(router, "api")
 	router.Use(static.Serve("/", static.LocalFile("build/web", true)))
 	router.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)

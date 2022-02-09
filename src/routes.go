@@ -11,6 +11,12 @@ func LoadRoutes(router *gin.Engine, path string) {
 	// Create the route group
 	group := router.Group(path)
 
-	// Load the routes
-	group.GET("/hello", routes.Hello)
+	// Load notebook routes
+	notebookGroup := group.Group("notebook")
+	notebookGroup.POST(  "",            routes.CreateNotebook)
+	notebookGroup.GET(   "all",         routes.ListNotebooks)
+	notebookGroup.GET(   "",            routes.OpenNotebook)
+	notebookGroup.PATCH( "name",        routes.SetNotebookName)
+	notebookGroup.PATCH( "description", routes.SetNotebookDescription)
+	notebookGroup.DELETE("",            routes.DeleteNotebook)
 }
