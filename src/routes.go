@@ -29,4 +29,11 @@ func LoadRoutes(router *gin.Engine, path string) {
 	entryGroup.PATCH( "content", routes.SetNotebookEntryContent)
 	entryGroup.GET(   "search",  routes.SearchNotebookEntries)
 	entryGroup.DELETE("",        routes.DeleteNotebookEntry)
+
+	// Load settings routes
+	settingsGroup := group.Group("settings")
+	settingsGroup.GET(   "all", routes.GetSettings)
+	settingsGroup.GET(   "",    routes.GetSettingsOption)
+	settingsGroup.PATCH( "",    routes.SetSettingsOption)
+	settingsGroup.DELETE("",    routes.DeleteSettingsOption)
 }
