@@ -36,4 +36,8 @@ func LoadRoutes(router *gin.Engine, path string) {
 	settingsGroup.GET(   "",    routes.GetSettingsOption)
 	settingsGroup.PATCH( "",    routes.SetSettingsOption)
 	settingsGroup.DELETE("",    routes.DeleteSettingsOption)
+
+	// Load window routes
+	windowGroup := group.Group("window")
+	windowGroup.PATCH("title", routes.SetWindowTitle)
 }

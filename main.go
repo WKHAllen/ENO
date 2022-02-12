@@ -16,6 +16,7 @@ import (
 	"github.com/webview/webview"
 
 	src "eno/src"
+	services "eno/src/services"
 	util "eno/src/util"
 )
 
@@ -69,10 +70,11 @@ func main() {
 		}
 	}()
 
-	// Set up Webview window
+	// Set up webview window
 	w := webview.New(debug)
 	defer w.Destroy()
-	w.SetTitle("Minimal webview example")
+	services.WindowHandle = w
+	w.SetTitle("Encrypted Notebook")
 	w.SetSize(800, 600, webview.HintNone)
 	w.Navigate(address)
 	w.Run()
