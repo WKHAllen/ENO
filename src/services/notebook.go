@@ -187,6 +187,7 @@ func decryptNotebook(notebook *EncryptedNotebook, key string) (*DecryptedNoteboo
 
 	decryptedNotebookContentJson, err := aesgmc.Open(nil, nonce, encryptedContent, nil)
 	if err != nil {
+		log.Printf("Error occurred decrypting notebook (%s): %s", filepath, err)
 		return nil, fmt.Errorf("incorrect notebook key")
 	}
 
