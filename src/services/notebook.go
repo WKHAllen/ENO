@@ -337,10 +337,10 @@ SetNotebookName changes a notebook's name and file name.
 
 	returns: an error, if one occurs.
 */
-func SetNotebookName(name string, newName string) error {
+func SetNotebookName(name string, newName string) (*EncryptedNotebook, error) {
 	notebook, err := readNotebook(name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	oldFilename := cleanFileName(notebook.Name)
@@ -349,16 +349,16 @@ func SetNotebookName(name string, newName string) error {
 
 	err = writeNotebook(notebook)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = os.Remove(oldFilepath)
 	if err != nil {
 		log.Printf("Error occurred deleting old notebook file (%s): %s", oldFilepath, err)
-		return fmt.Errorf("an unexpected error occurred while renaming the notebook, check the logs for more details")
+		return nil, fmt.Errorf("an unexpected error occurred while renaming the notebook, check the logs for more details")
 	}
 
-	return nil
+	return notebook, nil
 }
 
 /*
@@ -369,20 +369,20 @@ SetNotebookDescription changes a notebook's description.
 
 	returns:        an error, if one occurs.
 */
-func SetNotebookDescription(name string, newDescription string) error {
+func SetNotebookDescription(name string, newDescription string) (*EncryptedNotebook, error) {
 	notebook, err := readNotebook(name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	notebook.Description = newDescription
 
 	err = writeNotebook(notebook)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return notebook, nil
 }
 
 /*

@@ -85,13 +85,13 @@ func SetNotebookName(c *gin.Context) {
 		return
 	}
 
-	err := services.SetNotebookName(params.Name, params.NewName)
+	notebook, err := services.SetNotebookName(params.Name, params.NewName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
 
-	services.JSONResponse(c, nil)
+	services.JSONResponse(c, notebook)
 }
 
 // SetNotebookDescription changes a notebook's description.
@@ -102,13 +102,13 @@ func SetNotebookDescription(c *gin.Context) {
 		return
 	}
 
-	err := services.SetNotebookDescription(params.Name, params.NewDescription)
+	notebook, err := services.SetNotebookDescription(params.Name, params.NewDescription)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
 
-	services.JSONResponse(c, nil)
+	services.JSONResponse(c, notebook)
 }
 
 // DeleteNotebook deletes a notebook.
