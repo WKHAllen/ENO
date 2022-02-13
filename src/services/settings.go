@@ -11,7 +11,7 @@ import (
 	util "eno/src/util"
 )
 
-const settingsFile = "build/settings.json"
+const settingsFile = "settings.json"
 
 // ensureSettingsFileExists will create the settings file if it does not already exist.
 func ensureSettingsFileExists() {

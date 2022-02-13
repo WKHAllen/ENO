@@ -15,7 +15,7 @@ if "%1"=="frontend" goto :eof
 
 rem Build backend
 :backend
-cmd /c go build -o build
+cmd /c go build -o build -ldflags "-H windowsgui"
 
 rem End of file
 :eof

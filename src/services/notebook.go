@@ -19,7 +19,7 @@ import (
 	util "eno/src/util"
 )
 
-const notebooksDir = "build/notebooks"
+const notebooksDir = "notebooks"
 const notebookFileExt = ".eno"
 const notebookNameMinLength = 1
 const notebookNameMaxLength = 64

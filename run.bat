@@ -1,3 +1,24 @@
 @echo off
 
-build\eno.exe
+rem Check if debug mode requested
+if "%1"=="debug" goto :builddebug
+
+:run
+cd build
+eno.exe
+cd ..
+goto :eof
+
+rem Build for debug
+:builddebug
+cmd /c go build -o build
+goto :run
+
+rem Build for release
+:buildrelease
+cmd /c go build -o build -ldflags "-H windowsgui"
+goto :eof
+
+rem End of file
+:eof
+if "%1"=="debug" goto :buildrelease

@@ -30,7 +30,7 @@ func main() {
 	host := "localhost"
 	port := 42607
 	address := fmt.Sprintf("%s://%s:%d", protocol, host, port)
-	logsDir := "build/logs"
+	logsDir := "logs"
 	logFile := fmt.Sprintf("%s/%s", logsDir, "full.log")
 	os.Setenv("DEBUG", fmt.Sprint(debug))
 
@@ -50,9 +50,9 @@ func main() {
 
 	// Set up routing
 	router := gin.Default()
-	router.LoadHTMLGlob("build/web/index.html")
+	router.LoadHTMLGlob("web/index.html")
 	src.LoadRoutes(router, "api")
-	router.Use(static.Serve("/", static.LocalFile("build/web", true)))
+	router.Use(static.Serve("/", static.LocalFile("web", true)))
 	router.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
