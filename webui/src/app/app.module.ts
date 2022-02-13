@@ -8,12 +8,13 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 
 import { APIService } from './services/api/api.service';
+import { NotebookService } from './services/notebook/notebook.service';
 import { WindowService } from './services/window/window.service';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, FooterComponent],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
-  providers: [APIService, WindowService],
+  providers: [APIService, NotebookService, WindowService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

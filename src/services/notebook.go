@@ -335,7 +335,7 @@ SetNotebookName changes a notebook's name and file name.
 	name:    the notebook's current name.
 	newName: the notebook's new name.
 
-	returns: an error, if one occurs.
+	returns: the updated notebook, or an error.
 */
 func SetNotebookName(name string, newName string) (*EncryptedNotebook, error) {
 	notebook, err := readNotebook(name)
@@ -367,7 +367,7 @@ SetNotebookDescription changes a notebook's description.
 	path:           the notebook's name.
 	newDescription: the notebook's new description.
 
-	returns:        an error, if one occurs.
+	returns:        the updated notebook, or an error.
 */
 func SetNotebookDescription(name string, newDescription string) (*EncryptedNotebook, error) {
 	notebook, err := readNotebook(name)
