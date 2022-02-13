@@ -8,6 +8,15 @@ import (
 	"time"
 )
 
+const (
+	entryNameMinLength = 1
+	entryNameMaxLength = 256
+	entryContentMinLength = 0
+	entryContentMaxLength = 65536
+	entryQueryMinLength = 0
+	entryQueryMaxLength = 1024
+)
+
 // updateNotebookEntryEditTime updates a notebook entry's edited timestamp
 func updateNotebookEntryEditTime(notebook *DecryptedNotebook, entryName string) {
 	notebook.Content.Entries[entryName].EditTime = time.Now()
@@ -24,6 +33,10 @@ CreateNotebookEntry creates an entry in a notebook.
 	returns:      the new notebook entry, or an error.
 */
 func CreateNotebookEntry(notebookName string, notebookKey string, entryName string) (*NotebookEntry, error) {
+	if len(entryName) < entryNameMinLength || len(entryName) > entryNameMaxLength {
+		return nil, fmt.Errorf("notebook entry name must be between %d and %d characters in length", entryNameMinLength, entryNameMaxLength)
+	}
+
 	encryptedNotebook, err := readNotebook(notebookName)
 	if err != nil {
 		return nil, err
@@ -121,6 +134,10 @@ SetNotebookEntryName changes the name of an entry in a notebook.
 	returns:      the notebook entry, or an error.
 */
 func SetNotebookEntryName(notebookName string, notebookKey string, entryName string, newEntryName string) (*NotebookEntry, error) {
+	if len(newEntryName) < entryNameMinLength || len(newEntryName) > entryNameMaxLength {
+		return nil, fmt.Errorf("new notebook entry name must be between %d and %d characters in length", entryNameMinLength, entryNameMaxLength)
+	}
+
 	encryptedNotebook, err := readNotebook(notebookName)
 	if err != nil {
 		return nil, err
@@ -169,6 +186,10 @@ SetNotebookEntryContent sets the content of an entry in a notebook.
 	returns:      the notebook entry, or an error.
 */
 func SetNotebookEntryContent(notebookName string, notebookKey string, entryName string, newContent string) (*NotebookEntry, error) {
+	if len(newContent) < entryContentMinLength || len(newContent) > entryContentMaxLength {
+		return nil, fmt.Errorf("new notebook entry content must be between %d and %d characters in length", entryContentMinLength, entryContentMaxLength)
+	}
+
 	encryptedNotebook, err := readNotebook(notebookName)
 	if err != nil {
 		return nil, err
@@ -210,6 +231,10 @@ SearchNotebookEntries searches through a notebook's entries for query matches.
 	returns:      the matched notebook entries as a mapping with entry names as keys, or an error.
 */
 func SearchNotebookEntries(notebookName string, notebookKey string, query string, regexSearch bool) (map[string]*NotebookEntry, error) {
+	if len(query) < entryQueryMinLength || len(query) > entryQueryMaxLength {
+		return nil, fmt.Errorf("notebook entry query must be between %d and %d characters in length", entryQueryMinLength, entryQueryMaxLength)
+	}
+
 	filename := cleanFileName(notebookName)
 	filepath := fmt.Sprintf("%s/%s%s", notebooksDir, filename, notebookFileExt)
 

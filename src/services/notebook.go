@@ -19,14 +19,16 @@ import (
 	util "eno/src/util"
 )
 
-const notebooksDir = "notebooks"
-const notebookFileExt = ".eno"
-const notebookNameMinLength = 1
-const notebookNameMaxLength = 64
-const notebookDescriptionMinLength = 0
-const notebookDescriptionMaxLength = 256
-const notebookKeyMinLength = 8
-const notebookKeyMaxLength = 256
+const (
+	notebooksDir = "notebooks"
+	notebookFileExt = ".eno"
+	notebookNameMinLength = 1
+	notebookNameMaxLength = 64
+	notebookDescriptionMinLength = 0
+	notebookDescriptionMaxLength = 256
+	notebookKeyMinLength = 8
+	notebookKeyMaxLength = 256
+)
 
 // NotebookEntry represents a single entry within a notebook.
 type NotebookEntry struct {
@@ -338,6 +340,10 @@ SetNotebookName changes a notebook's name and file name.
 	returns: the updated notebook, or an error.
 */
 func SetNotebookName(name string, newName string) (*EncryptedNotebook, error) {
+	if len(newName) < notebookNameMinLength || len(newName) > notebookNameMaxLength {
+		return nil, fmt.Errorf("new notebook name must be between %d and %d characters in length", notebookNameMinLength, notebookNameMaxLength)
+	}
+
 	notebook, err := readNotebook(name)
 	if err != nil {
 		return nil, err
@@ -370,6 +376,10 @@ SetNotebookDescription changes a notebook's description.
 	returns:        the updated notebook, or an error.
 */
 func SetNotebookDescription(name string, newDescription string) (*EncryptedNotebook, error) {
+	if len(newDescription) < notebookDescriptionMinLength || len(newDescription) > notebookDescriptionMaxLength {
+		return nil, fmt.Errorf("new notebook description must be between %d and %d characters in length", notebookDescriptionMinLength, notebookDescriptionMaxLength)
+	}
+
 	notebook, err := readNotebook(name)
 	if err != nil {
 		return nil, err

@@ -11,7 +11,11 @@ import (
 	util "eno/src/util"
 )
 
-const settingsFile = "settings.json"
+const (
+	settingsFile = "settings.json"
+	settingsKeyMinLength = 1
+	settingsKeyMaxLength = 256
+)
 
 // ensureSettingsFileExists will create the settings file if it does not already exist.
 func ensureSettingsFileExists() {
@@ -95,6 +99,10 @@ SetSettingsOption sets an option in the settings.
 	returns: an error, if one occurs.
 */
 func SetSettingsOption(key string, value interface{}) error {
+	if len(key) < settingsKeyMinLength || len(key) > settingsKeyMaxLength {
+		return fmt.Errorf("settings key must be between %d and %d characters in length", settingsKeyMinLength, settingsKeyMaxLength)
+	}
+
 	settings, err := readSettings()
 	if err != nil {
 		return err
