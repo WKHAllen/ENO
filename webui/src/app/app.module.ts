@@ -9,12 +9,13 @@ import { FooterComponent } from './components/footer/footer.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
+import { EntryService } from './services/entry/entry.service';
 import { WindowService } from './services/window/window.service';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, FooterComponent],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
-  providers: [APIService, NotebookService, WindowService],
+  providers: [APIService, NotebookService, EntryService, WindowService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

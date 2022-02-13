@@ -13,7 +13,7 @@ export interface NotebookEntry {
  */
 export interface NotebookContent {
   entries: {
-    [key: string]: NotebookEntry;
+    [entryName: string]: NotebookEntry;
   };
 }
 
