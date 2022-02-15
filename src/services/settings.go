@@ -26,14 +26,14 @@ func ensureSettingsFileExists() {
 }
 
 // readSettings reads the settings file into memory.
-func readSettings() (map[string]interface{}, error) {
+func readSettings() (map[string]string, error) {
 	settingsJson, err := os.ReadFile(settingsFile)
 	if err != nil {
 		log.Printf("Error occurred reading settings file (%s): %s", settingsFile, err)
 		return nil, fmt.Errorf("an unexpected error occurred while getting app settings, check the logs for more details")
 	}
 
-	settings := make(map[string]interface{})
+	settings := make(map[string]string)
 	err = json.Unmarshal(settingsJson, &settings)
 	if err != nil {
 		log.Printf("Error occurred parsing settings file JSON (%s): %s", settingsFile, err)
@@ -44,7 +44,7 @@ func readSettings() (map[string]interface{}, error) {
 }
 
 // writeSettings writes the settings to the settings file.
-func writeSettings(settings map[string]interface{}) error {
+func writeSettings(settings map[string]string) error {
 	settingsJson, err := json.Marshal(settings)
 	if err != nil {
 		log.Printf("Error occurred stringifying settings file JSON (%s): %s", settingsFile, err)
@@ -65,7 +65,7 @@ GetSettings gets all settings.
 
 	returns: the settings, or an error.
 */
-func GetSettings() (map[string]interface{}, error) {
+func GetSettings() (map[string]string, error) {
 	settings, err := readSettings()
 	if err != nil {
 		return nil, err
@@ -81,10 +81,10 @@ GetSettingsOption gets an option from the settings.
 
 	returns: the option from settings, or an error.
 */
-func GetSettingsOption(key string) (interface{}, error) {
+func GetSettingsOption(key string) (string, error) {
 	settings, err := readSettings()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	return settings[key], nil
@@ -98,7 +98,7 @@ SetSettingsOption sets an option in the settings.
 
 	returns: an error, if one occurs.
 */
-func SetSettingsOption(key string, value interface{}) error {
+func SetSettingsOption(key string, value string) error {
 	if len(key) < settingsKeyMinLength || len(key) > settingsKeyMaxLength {
 		return fmt.Errorf("settings key must be between %d and %d characters in length", settingsKeyMinLength, settingsKeyMaxLength)
 	}

@@ -6,15 +6,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { HomeComponent } from './components/home/home.component';
+import { DarkModeToggleComponent } from './dark-mode-toggle/dark-mode-toggle.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
 import { EntryService } from './services/entry/entry.service';
 import { SettingsService } from './services/settings/settings.service';
 import { WindowService } from './services/window/window.service';
+import { DarkModeService } from './services/dark-mode/dark-mode.service';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, FooterComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    FooterComponent,
+    HomeComponent,
+    DarkModeToggleComponent,
+  ],
   imports: [BrowserModule, HttpClientModule, AppRoutingModule],
   providers: [
     APIService,
@@ -22,6 +31,7 @@ import { WindowService } from './services/window/window.service';
     EntryService,
     SettingsService,
     WindowService,
+    DarkModeService,
   ],
   bootstrap: [AppComponent],
 })

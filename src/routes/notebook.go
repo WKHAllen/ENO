@@ -7,35 +7,35 @@ import (
 )
 
 type CreateNotebookParams struct {
-	Name        string `json:"name"        binding:"required"`
-	Description string `json:"description" binding:"required"`
-	Key         string `json:"key"         binding:"required"`
+	Name        string `form:"name"        binding:"required"`
+	Description string `form:"description" binding:"required"`
+	Key         string `form:"key"         binding:"required"`
 }
 
 type OpenNotebookParams struct {
-	Name string `json:"name" binding:"required"`
-	Key  string `json:"key"  binding:"required"`
+	Name string `form:"name" binding:"required"`
+	Key  string `form:"key"  binding:"required"`
 }
 
 type SetNotebookNameParams struct {
-	Name    string `json:"name"    binding:"required"`
-	NewName string `json:"newName" binding:"required"`
+	Name    string `form:"name"    binding:"required"`
+	NewName string `form:"newName" binding:"required"`
 }
 
 type SetNotebookDescriptionParams struct {
-	Name           string `json:"name"           binding:"required"`
-	NewDescription string `json:"newDescription" binding:"required"`
+	Name           string `form:"name"           binding:"required"`
+	NewDescription string `form:"newDescription" binding:"required"`
 }
 
 type DeleteNotebookParams struct {
-	Name string `json:"name" binding:"required"`
-	Key  string `json:"key"  bindign:"required"`
+	Name string `form:"name" binding:"required"`
+	Key  string `form:"key"  bindign:"required"`
 }
 
 // CreateNotebook creates a new notebook.
 func CreateNotebook(c *gin.Context) {
 	var params CreateNotebookParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -63,7 +63,7 @@ func ListNotebooks(c *gin.Context) {
 // OpenNotebook opens a specified notebook.
 func OpenNotebook(c *gin.Context) {
 	var params OpenNotebookParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -80,7 +80,7 @@ func OpenNotebook(c *gin.Context) {
 // SetNotebookName changes a notebook's name.
 func SetNotebookName(c *gin.Context) {
 	var params SetNotebookNameParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -97,7 +97,7 @@ func SetNotebookName(c *gin.Context) {
 // SetNotebookDescription changes a notebook's description.
 func SetNotebookDescription(c *gin.Context) {
 	var params SetNotebookDescriptionParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -114,7 +114,7 @@ func SetNotebookDescription(c *gin.Context) {
 // DeleteNotebook deletes a notebook.
 func DeleteNotebook(c *gin.Context) {
 	var params DeleteNotebookParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}

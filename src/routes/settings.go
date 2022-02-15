@@ -7,16 +7,16 @@ import (
 )
 
 type GetSettingsOptionParams struct {
-	Key string `json:"key" binding:"required"`
+	Key string `form:"key" binding:"required"`
 }
 
 type SetSettingsOptionParams struct {
-	Key   string      `json:"key"   binding:"required"`
-	Value interface{} `json:"value" binding:"required"`
+	Key   string `form:"key"   binding:"required"`
+	Value string `form:"value" binding:"required"`
 }
 
 type DeleteSettingsOptionParams struct {
-	Key string `json:"key" binding:"required"`
+	Key string `form:"key" binding:"required"`
 }
 
 // GetSettings gets all settings.
@@ -33,7 +33,7 @@ func GetSettings(c *gin.Context) {
 // GetSettingsOption gets an option from the settings.
 func GetSettingsOption(c *gin.Context) {
 	var params GetSettingsOptionParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -50,7 +50,7 @@ func GetSettingsOption(c *gin.Context) {
 // SetSettingsOption sets an option in the settings.
 func SetSettingsOption(c *gin.Context) {
 	var params SetSettingsOptionParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -67,7 +67,7 @@ func SetSettingsOption(c *gin.Context) {
 // DeleteSettingsOption deletes an option from the settings.
 func DeleteSettingsOption(c *gin.Context) {
 	var params DeleteSettingsOptionParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}

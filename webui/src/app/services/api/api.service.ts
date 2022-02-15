@@ -40,17 +40,17 @@ export class APIService {
    *
    * @param method The HTTP method.
    * @param path The URL path.
-   * @param body The request body.
+   * @param params The request parameters.
    * @returns The response data.
    */
   private async request<T = void>(
     method: APIMethod,
     path: string,
-    body: Params = {}
+    params: Params = {}
   ): Promise<T> {
     return new Promise((resolve, reject) => {
       this.http
-        .request<APIResponse<T>>(method, apiPath + path, { body })
+        .request<APIResponse<T>>(method, apiPath + path, { params })
         .subscribe({
           next: (res) =>
             res.data !== undefined ? resolve(res.data as T) : reject(res.error),

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+/**
+ * The app footer.
+ */
 @Component({
   selector: 'eno-footer',
   templateUrl: './footer.component.html',

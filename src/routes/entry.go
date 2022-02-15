@@ -7,53 +7,53 @@ import (
 )
 
 type CreateNotebookEntryParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	EntryName    string `json:"entryName"    binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	EntryName    string `form:"entryName"    binding:"required"`
 }
 
 type ListNotebookEntriesParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
 }
 
 type GetNotebookEntryParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	EntryName    string `json:"entryName"    binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	EntryName    string `form:"entryName"    binding:"required"`
 }
 
 type SetNotebookEntryNameParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	EntryName    string `json:"entryName"    binding:"required"`
-	NewEntryName string `json:"newEntryName" binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	EntryName    string `form:"entryName"    binding:"required"`
+	NewEntryName string `form:"newEntryName" binding:"required"`
 }
 
 type SetNotebookEntryContentParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	EntryName    string `json:"entryName"    binding:"required"`
-	NewContent   string `json:"newContent"   binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	EntryName    string `form:"entryName"    binding:"required"`
+	NewContent   string `form:"newContent"   binding:"required"`
 }
 
 type SearchNotebookEntriesParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	Query        string `json:"query"        binding:"required"`
-	RegexSearch  *bool  `json:"regexSearch"  binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	Query        string `form:"query"        binding:"required"`
+	RegexSearch  *bool  `form:"regexSearch"  binding:"required"`
 }
 
 type DeleteNotebookEntryParams struct {
-	NotebookName string `json:"notebookName" binding:"required"`
-	NotebookKey  string `json:"notebookKey"  binding:"required"`
-	EntryName    string `json:"entryName"    binding:"required"`
+	NotebookName string `form:"notebookName" binding:"required"`
+	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	EntryName    string `form:"entryName"    binding:"required"`
 }
 
 // CreateNotebookEntry creates an entry in a notebook.
 func CreateNotebookEntry(c *gin.Context) {
 	var params CreateNotebookEntryParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -70,7 +70,7 @@ func CreateNotebookEntry(c *gin.Context) {
 // ListNotebookEntries lists all entries in a notebook.
 func ListNotebookEntries(c *gin.Context) {
 	var params ListNotebookEntriesParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -87,7 +87,7 @@ func ListNotebookEntries(c *gin.Context) {
 // GetNotebookEntry gets an entry from the notebook.
 func GetNotebookEntry(c *gin.Context) {
 	var params GetNotebookEntryParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -104,7 +104,7 @@ func GetNotebookEntry(c *gin.Context) {
 // SetNotebookEntryName changes the name of an entry in a notebook.
 func SetNotebookEntryName(c *gin.Context) {
 	var params SetNotebookEntryNameParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -121,7 +121,7 @@ func SetNotebookEntryName(c *gin.Context) {
 // SetNotebookEntryContent sets the content of an entry in a notebook.
 func SetNotebookEntryContent(c *gin.Context) {
 	var params SetNotebookEntryContentParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -138,7 +138,7 @@ func SetNotebookEntryContent(c *gin.Context) {
 // SearchNotebookEntries searches through a notebook's entries for query matches.
 func SearchNotebookEntries(c *gin.Context) {
 	var params SearchNotebookEntriesParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
@@ -155,7 +155,7 @@ func SearchNotebookEntries(c *gin.Context) {
 // DeleteNotebookEntry deletes an entry in a notebook.
 func DeleteNotebookEntry(c *gin.Context) {
 	var params DeleteNotebookEntryParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}

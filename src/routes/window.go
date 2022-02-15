@@ -7,13 +7,13 @@ import (
 )
 
 type SetWindowTitleParams struct {
-	Title string `json:"title" binding:"required"`
+	Title string `form:"title" binding:"required"`
 }
 
 // SetWindowTitle sets the title of the webview window.
 func SetWindowTitle(c *gin.Context) {
 	var params SetWindowTitleParams
-	if err := c.ShouldBindJSON(&params); err != nil {
+	if err := c.ShouldBindQuery(&params); err != nil {
 		services.JSONError(c, err.Error())
 		return
 	}
