@@ -1,1 +1,8 @@
-<p>dark-mode-toggle works!</p>
+<div class="dark-mode-toggle" (click)="toggleDarkMode()">
+  <div [class]="!darkMode ? 'toggle-head light' : 'toggle-head dark'">
+    <fa-icon
+      [icon]="!darkMode ? icons.faSun : icons.faMoon"
+      class="toggle-icon"
+    ></fa-icon>
+  </div>
+</div>

@@ -1,4 +1,20 @@
 .header {
   background-color: var(--bg-variant-color);
   color: var(--text-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-left {
+    padding: 16px;
+
+    .app-name {
+      font-weight: 500;
+    }
+  }
+
+  .header-right {
+    padding: 16px;
+  }
 }

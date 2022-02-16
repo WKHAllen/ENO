@@ -1,0 +1,48 @@
+@import "../../styles";
+
+@dark-mode-toggle-width: 60px;
+@dark-mode-toggle-height: 35px;
+@dark-mode-toggle-padding: 3px;
+@dark-mode-toggle-thumb-size: @dark-mode-toggle-height - 2 *
+  @dark-mode-toggle-padding;
+
+.dark-mode-toggle {
+  position: relative;
+  width: @dark-mode-toggle-width;
+  height: @dark-mode-toggle-height;
+  border-radius: 100vmax;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 25%);
+
+  .toggle-head {
+    position: absolute;
+    width: @dark-mode-toggle-thumb-size;
+    height: @dark-mode-toggle-thumb-size;
+    border-radius: 50%;
+    top: @dark-mode-toggle-padding;
+    transition: all @dark-mode-toggle-animation-duration ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.light {
+      left: @dark-mode-toggle-padding;
+      background-color: #4f4fff;
+
+      .toggle-icon {
+        color: #ffca29;
+      }
+    }
+
+    &.dark {
+      left: @dark-mode-toggle-width - @dark-mode-toggle-thumb-size -
+        @dark-mode-toggle-padding;
+      background-color: #0b278f;
+
+      .toggle-icon {
+        color: #efefef;
+      }
+    }
+  }
+}
