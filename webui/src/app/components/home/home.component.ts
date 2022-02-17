@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'eno-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.less'],
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  public async ngOnInit(): Promise<void> {}
 }

@@ -1,6 +1,4 @@
 .header {
-  background-color: var(--bg-variant-color);
-  color: var(--text-color);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -11,6 +9,7 @@
 
     .app-name {
       font-weight: 500;
+      margin-bottom: 0;
     }
   }
 
