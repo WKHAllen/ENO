@@ -4,16 +4,7 @@
   justify-content: space-between;
   align-items: center;
 
-  .header-left {
-    padding: 16px;
-
-    .app-name {
-      font-weight: 500;
-      margin-bottom: 0;
-    }
-  }
-
-  .header-right {
-    padding: 16px;
+  .app-name {
+    margin-bottom: 0;
   }
 }
