@@ -8,35 +8,10 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-$eno-palette: (
-  50: #383838,
-  100: #323232,
-  200: #2a2a2a,
-  300: #242424,
-  400: #1e1e1e,
-  500: #181818,
-  600: #121212,
-  700: #0a0a0a,
-  800: #060606,
-  900: #000000,
-  contrast: (
-    50: #5fff5f,
-    100: #4fff4f,
-    200: #3fff3f,
-    300: #2fff2f,
-    400: #1fff1f,
-    500: #0fff0f,
-    600: #00ef00,
-    700: #00df00,
-    800: #00cf00,
-    900: #00bf00,
-  ),
-);
-
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$eno-primary: mat.define-palette($eno-palette);
+$eno-primary: mat.define-palette(mat.$indigo-palette);
 $eno-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
@@ -58,11 +33,3 @@ $eno-theme: mat.define-dark-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($eno-theme);
-
-$background-color: mat.get-color-from-palette($eno-primary, "darker");
-$text-color: mat.get-color-from-palette($eno-primary, "darker-contrast");
-
-.color-primary {
-  background-color: $background-color;
-  color: $text-color;
-}
