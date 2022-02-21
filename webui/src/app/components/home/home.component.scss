@@ -1,21 +1,27 @@
 @use "../../../globals";
 
-.notebooks-container {
+.notebooks-card-container {
   padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
 
-  .notebooks {
-    margin: auto;
-
-    tr > * {
+  .notebooks-card {
+    .notebooks-container {
       padding: 8px;
-    }
 
-    .notebook {
-      .notebook-name,
-      .notebook-description,
-      .notebook-create-time,
-      .notebook-edit-time {
-        @include globals.line-cutoff(1);
+      .notebooks {
+        tr > * {
+          padding: 8px;
+        }
+
+        .notebook {
+          .notebook-name,
+          .notebook-description,
+          .notebook-create-time,
+          .notebook-edit-time {
+            @include globals.line-cutoff(1);
+          }
+        }
       }
     }
   }

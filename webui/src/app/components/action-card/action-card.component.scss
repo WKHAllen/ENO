@@ -1,0 +1,14 @@
+@use "../../../globals";
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid globals.$action-card-border-color;
+  border-radius: 8px;
+
+  // See globals.scss for additional styles
+}
+
+.floating {
+  box-shadow: 0 0 16px rgba(0, 0, 0, 50%);
+}

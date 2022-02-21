@@ -1,32 +1,61 @@
-<div *ngIf="!loading; else loadingTemplate" class="notebooks-container">
-  <table matSort (matSortChange)="sortNotebooks($event)" class="notebooks">
-    <tr>
-      <th mat-sort-header="name">Name</th>
-      <th mat-sort-header="description">Description</th>
-      <th mat-sort-header="createTime">Created</th>
-      <th mat-sort-header="editTime">Edited</th>
-    </tr>
-    <tr *ngFor="let notebook of sortedNotebooks" class="notebook">
-      <td>
-        <span class="notebook-name">{{ notebook.name }}</span>
-      </td>
-      <td>
-        <span class="notebook-description">{{ notebook.description }}</span>
-      </td>
-      <td>
-        <span class="notebook-create-time">{{
-          notebook.createTime | date: "medium"
-        }}</span>
-      </td>
-      <td>
-        <span class="notebook-edit-time">{{
-          notebook.editTime | date: "medium"
-        }}</span>
-      </td>
-    </tr>
-  </table>
+<div *ngIf="!loading; else loadingTemplate" class="notebooks-card-container">
+  <eno-action-card class="notebooks-card">
+    <div>
+      <button
+        mat-icon-button
+        (click)="getNotebooks()"
+        matTooltip="Refresh notebooks"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="createNotebook()"
+        matTooltip="New notebook"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div class="notebooks-container">
+      <table
+        *ngIf="notebooks.length > 0; else noNotebooksTemplate"
+        matSort
+        (matSortChange)="sortNotebooks($event)"
+        class="notebooks"
+      >
+        <tr>
+          <th mat-sort-header="name">Name</th>
+          <th mat-sort-header="description">Description</th>
+          <th mat-sort-header="createTime">Created</th>
+          <th mat-sort-header="editTime">Edited</th>
+        </tr>
+        <tr *ngFor="let notebook of sortedNotebooks" class="notebook">
+          <td>
+            <span class="notebook-name">{{ notebook.name }}</span>
+          </td>
+          <td>
+            <span class="notebook-description">{{ notebook.description }}</span>
+          </td>
+          <td>
+            <span class="notebook-create-time">{{
+              notebook.createTime | date: "medium"
+            }}</span>
+          </td>
+          <td>
+            <span class="notebook-edit-time">{{
+              notebook.editTime | date: "medium"
+            }}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </eno-action-card>
 </div>
 
 <ng-template #loadingTemplate>
   <eno-spinner></eno-spinner>
+</ng-template>
+
+<ng-template #noNotebooksTemplate>
+  <eno-info>You have no notebooks yet</eno-info>
 </ng-template>

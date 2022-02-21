@@ -1,3 +1,5 @@
+$action-card-border-color: #cfcfcf;
+
 html,
 body {
   height: 100vh;
@@ -53,4 +55,27 @@ a.text-link {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+
+.action-card {
+  // Header
+  & > *:nth-child(1) {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid $action-card-border-color;
+  }
+
+  // Body
+  & > *:nth-child(2) {
+    flex-grow: 1;
+  }
+
+  // Footer
+  & > *:nth-child(3) {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid $action-card-border-color;
+  }
 }

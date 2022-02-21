@@ -20,10 +20,24 @@ export class HomeComponent implements OnInit {
   constructor(private readonly notebookService: NotebookService) {}
 
   public async ngOnInit(): Promise<void> {
+    await this.getNotebooks();
+    this.loading = false;
+  }
+
+  /**
+   * Get all notebooks.
+   */
+  public async getNotebooks(): Promise<void> {
+    this.loading = true;
     this.notebooks = await this.notebookService.listNotebooks();
     this.sortedNotebooks = this.notebooks.slice();
     this.loading = false;
   }
+
+  /**
+   * Create a new notebook.
+   */
+  public async createNotebook(): Promise<void> {}
 
   /**
    * Sort the existing notebooks.
