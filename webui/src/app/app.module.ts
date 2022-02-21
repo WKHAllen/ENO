@@ -4,7 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -32,7 +34,9 @@ import { WindowService } from './services/window/window.service';
     FormsModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatIconModule,
     MatProgressSpinnerModule,
+    MatSortModule,
     MatToolbarModule,
   ],
   providers: [

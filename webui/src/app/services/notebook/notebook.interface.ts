@@ -23,8 +23,8 @@ export interface NotebookContent {
 export interface EncryptedNotebook {
   name: string;
   description: string;
-  createTime: string;
-  editTime: string;
+  createTime: Date;
+  editTime: Date;
   content: string;
 }
 
@@ -34,7 +34,7 @@ export interface EncryptedNotebook {
 export interface DecryptedNotebook {
   name: string;
   description: string;
-  createTime: string;
-  editTime: string;
+  createTime: Date;
+  editTime: Date;
   content: NotebookContent;
 }

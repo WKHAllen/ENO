@@ -45,3 +45,12 @@ a.text-link {
     color: darken(blue, 25%);
   }
 }
+
+@mixin line-cutoff($num-lines) {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: $num-lines;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
