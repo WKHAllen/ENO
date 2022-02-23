@@ -4,6 +4,9 @@ import { NotebookService } from '../../services/notebook/notebook.service';
 import { ErrorService } from '../../services/error/error.service';
 import { notebookConstants, formAppearance } from '../../util';
 
+/**
+ * The create notebook form.
+ */
 interface CreateNotebookForm {
   notebookName: string;
   notebookDescription: string;
