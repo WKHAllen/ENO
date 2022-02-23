@@ -7,16 +7,16 @@ import (
 )
 
 type GetSettingsOptionParams struct {
-	Key string `form:"key" binding:"required"`
+	Key *string `form:"key" binding:"required"`
 }
 
 type SetSettingsOptionParams struct {
-	Key   string `form:"key"   binding:"required"`
-	Value string `form:"value" binding:"required"`
+	Key   *string `form:"key"   binding:"required"`
+	Value *string `form:"value" binding:"required"`
 }
 
 type DeleteSettingsOptionParams struct {
-	Key string `form:"key" binding:"required"`
+	Key *string `form:"key" binding:"required"`
 }
 
 // GetSettings gets all settings.
@@ -38,7 +38,7 @@ func GetSettingsOption(c *gin.Context) {
 		return
 	}
 
-	option, err := services.GetSettingsOption(params.Key)
+	option, err := services.GetSettingsOption(*params.Key)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -55,7 +55,7 @@ func SetSettingsOption(c *gin.Context) {
 		return
 	}
 
-	err := services.SetSettingsOption(params.Key, params.Value)
+	err := services.SetSettingsOption(*params.Key, *params.Value)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -72,7 +72,7 @@ func DeleteSettingsOption(c *gin.Context) {
 		return
 	}
 
-	err := services.DeleteSettingsOption(params.Key)
+	err := services.DeleteSettingsOption(*params.Key)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return

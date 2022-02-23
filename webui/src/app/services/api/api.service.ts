@@ -53,8 +53,10 @@ export class APIService {
         .request<APIResponse<T>>(method, apiPath + path, { params })
         .subscribe({
           next: (res) =>
-            res.data !== undefined ? resolve(res.data as T) : reject(res.error),
-          error: (err) => reject(err),
+            res.error === undefined || res.error === null
+              ? resolve(res.data as T)
+              : reject(res.error),
+          error: (err) => reject(err.error.error),
         });
     });
   }

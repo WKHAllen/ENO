@@ -1,4 +1,22 @@
 import { Sort } from '@angular/material/sort';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+
+/**
+ * The appearance of form elements.
+ */
+export const formAppearance: MatFormFieldAppearance = 'fill';
+
+/**
+ * Constants related to notebooks.
+ */
+export const notebookConstants = {
+  notebookNameMinLength: 1,
+  notebookNameMaxLength: 64,
+  notebookDescriptionMinLength: 0,
+  notebookDescriptionMaxLength: 256,
+  notebookKeyMinLength: 8,
+  notebookKeyMaxLength: 256,
+};
 
 /**
  * Compare two values.

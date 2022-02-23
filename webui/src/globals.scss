@@ -57,6 +57,24 @@ a.text-link {
   white-space: normal;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-justified {
+  text-align: justify;
+}
+
+.max-width {
+  width: 100%;
+}
+
+.snackbar {
+  .mat-simple-snackbar-action {
+    color: #9f9f9f;
+  }
+}
+
 .action-card {
   // Header
   & > *:nth-child(1) {

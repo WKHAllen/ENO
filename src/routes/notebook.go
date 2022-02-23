@@ -7,29 +7,29 @@ import (
 )
 
 type CreateNotebookParams struct {
-	Name        string `form:"name"        binding:"required"`
-	Description string `form:"description" binding:"required"`
-	Key         string `form:"key"         binding:"required"`
+	Name        *string `form:"name"        binding:"required"`
+	Description *string `form:"description" binding:"required"`
+	Key         *string `form:"key"         binding:"required"`
 }
 
 type OpenNotebookParams struct {
-	Name string `form:"name" binding:"required"`
-	Key  string `form:"key"  binding:"required"`
+	Name *string `form:"name" binding:"required"`
+	Key  *string `form:"key"  binding:"required"`
 }
 
 type SetNotebookNameParams struct {
-	Name    string `form:"name"    binding:"required"`
-	NewName string `form:"newName" binding:"required"`
+	Name    *string `form:"name"    binding:"required"`
+	NewName *string `form:"newName" binding:"required"`
 }
 
 type SetNotebookDescriptionParams struct {
-	Name           string `form:"name"           binding:"required"`
-	NewDescription string `form:"newDescription" binding:"required"`
+	Name           *string `form:"name"           binding:"required"`
+	NewDescription *string `form:"newDescription" binding:"required"`
 }
 
 type DeleteNotebookParams struct {
-	Name string `form:"name" binding:"required"`
-	Key  string `form:"key"  bindign:"required"`
+	Name *string `form:"name" binding:"required"`
+	Key  *string `form:"key"  bindign:"required"`
 }
 
 // CreateNotebook creates a new notebook.
@@ -40,7 +40,7 @@ func CreateNotebook(c *gin.Context) {
 		return
 	}
 
-	notebook, err := services.CreateNotebook(params.Name, params.Description, params.Key)
+	notebook, err := services.CreateNotebook(*params.Name, *params.Description, *params.Key)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -68,7 +68,7 @@ func OpenNotebook(c *gin.Context) {
 		return
 	}
 
-	notebook, err := services.OpenNotebook(params.Name, params.Key)
+	notebook, err := services.OpenNotebook(*params.Name, *params.Key)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -85,7 +85,7 @@ func SetNotebookName(c *gin.Context) {
 		return
 	}
 
-	notebook, err := services.SetNotebookName(params.Name, params.NewName)
+	notebook, err := services.SetNotebookName(*params.Name, *params.NewName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -102,7 +102,7 @@ func SetNotebookDescription(c *gin.Context) {
 		return
 	}
 
-	notebook, err := services.SetNotebookDescription(params.Name, params.NewDescription)
+	notebook, err := services.SetNotebookDescription(*params.Name, *params.NewDescription)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -119,7 +119,7 @@ func DeleteNotebook(c *gin.Context) {
 		return
 	}
 
-	err := services.DeleteNotebook(params.Name, params.Key)
+	err := services.DeleteNotebook(*params.Name, *params.Key)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return

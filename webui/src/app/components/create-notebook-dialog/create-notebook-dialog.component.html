@@ -1,0 +1,106 @@
+<h1 class="text-center">Create a notebook</h1>
+<mat-dialog-content>
+  <form
+    #createNotebookForm="ngForm"
+    id="createNotebookForm"
+    (ngSubmit)="onCreateNotebook(createNotebookForm.value)"
+  >
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The name of the notebook"
+    >
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        type="text"
+        id="notebookName"
+        name="notebookName"
+        [minLength]="notebookConstants.notebookNameMinLength"
+        [maxLength]="notebookConstants.notebookNameMaxLength"
+        required
+        ngModel
+      />
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="A description of the notebook"
+    >
+      <mat-label>Description</mat-label>
+      <input
+        matInput
+        type="text"
+        id="notebookDescription"
+        name="notebookDescription"
+        [minLength]="notebookConstants.notebookDescriptionMinLength"
+        [maxLength]="notebookConstants.notebookDescriptionMaxLength"
+        ngModel
+      />
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The key to use for encrypting and decrypting the notebook"
+    >
+      <mat-label>Key</mat-label>
+      <input
+        matInput
+        [type]="hideKey ? 'password' : 'text'"
+        id="notebookKey"
+        name="notebookKey"
+        [minLength]="notebookConstants.notebookKeyMinLength"
+        [maxLength]="notebookConstants.notebookKeyMaxLength"
+        required
+        ngModel
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideKey = !hideKey"
+      >
+        <mat-icon>{{ hideKey ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="Confirm the encryption key"
+    >
+      <mat-label>Confirm key</mat-label>
+      <input
+        matInput
+        [type]="hideConfirmKey ? 'password' : 'text'"
+        id="notebookKeyConfirm"
+        name="notebookKeyConfirm"
+        [minLength]="notebookConstants.notebookKeyMinLength"
+        [maxLength]="notebookConstants.notebookKeyMaxLength"
+        required
+        ngModel
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideConfirmKey = !hideConfirmKey"
+      >
+        <mat-icon>{{
+          hideConfirmKey ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close(false)">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    form="createNotebookForm"
+    [disabled]="!createNotebookForm.form.valid"
+  >
+    Create
+  </button>
+</mat-dialog-actions>

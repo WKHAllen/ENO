@@ -7,47 +7,47 @@ import (
 )
 
 type CreateNotebookEntryParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	EntryName    string `form:"entryName"    binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	EntryName    *string `form:"entryName"    binding:"required"`
 }
 
 type ListNotebookEntriesParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
 }
 
 type GetNotebookEntryParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	EntryName    string `form:"entryName"    binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	EntryName    *string `form:"entryName"    binding:"required"`
 }
 
 type SetNotebookEntryNameParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	EntryName    string `form:"entryName"    binding:"required"`
-	NewEntryName string `form:"newEntryName" binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	EntryName    *string `form:"entryName"    binding:"required"`
+	NewEntryName *string `form:"newEntryName" binding:"required"`
 }
 
 type SetNotebookEntryContentParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	EntryName    string `form:"entryName"    binding:"required"`
-	NewContent   string `form:"newContent"   binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	EntryName    *string `form:"entryName"    binding:"required"`
+	NewContent   *string `form:"newContent"   binding:"required"`
 }
 
 type SearchNotebookEntriesParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	Query        string `form:"query"        binding:"required"`
-	RegexSearch  *bool  `form:"regexSearch"  binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	Query        *string `form:"query"        binding:"required"`
+	RegexSearch  *bool  `form:"regexSearch"   binding:"required"`
 }
 
 type DeleteNotebookEntryParams struct {
-	NotebookName string `form:"notebookName" binding:"required"`
-	NotebookKey  string `form:"notebookKey"  binding:"required"`
-	EntryName    string `form:"entryName"    binding:"required"`
+	NotebookName *string `form:"notebookName" binding:"required"`
+	NotebookKey  *string `form:"notebookKey"  binding:"required"`
+	EntryName    *string `form:"entryName"    binding:"required"`
 }
 
 // CreateNotebookEntry creates an entry in a notebook.
@@ -58,7 +58,7 @@ func CreateNotebookEntry(c *gin.Context) {
 		return
 	}
 
-	entry, err := services.CreateNotebookEntry(params.NotebookName, params.NotebookKey, params.EntryName)
+	entry, err := services.CreateNotebookEntry(*params.NotebookName, *params.NotebookKey, *params.EntryName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -75,7 +75,7 @@ func ListNotebookEntries(c *gin.Context) {
 		return
 	}
 
-	entries, err := services.ListNotebookEntries(params.NotebookName, params.NotebookKey)
+	entries, err := services.ListNotebookEntries(*params.NotebookName, *params.NotebookKey)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -92,7 +92,7 @@ func GetNotebookEntry(c *gin.Context) {
 		return
 	}
 
-	entry, err := services.GetNotebookEntry(params.NotebookName, params.NotebookKey, params.EntryName)
+	entry, err := services.GetNotebookEntry(*params.NotebookName, *params.NotebookKey, *params.EntryName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -109,7 +109,7 @@ func SetNotebookEntryName(c *gin.Context) {
 		return
 	}
 
-	entry, err := services.SetNotebookEntryName(params.NotebookName, params.NotebookKey, params.EntryName, params.NewEntryName)
+	entry, err := services.SetNotebookEntryName(*params.NotebookName, *params.NotebookKey, *params.EntryName, *params.NewEntryName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -126,7 +126,7 @@ func SetNotebookEntryContent(c *gin.Context) {
 		return
 	}
 
-	entry, err := services.SetNotebookEntryContent(params.NotebookName, params.NotebookKey, params.EntryName, params.NewContent)
+	entry, err := services.SetNotebookEntryContent(*params.NotebookName, *params.NotebookKey, *params.EntryName, *params.NewContent)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -143,7 +143,7 @@ func SearchNotebookEntries(c *gin.Context) {
 		return
 	}
 
-	entries, err := services.SearchNotebookEntries(params.NotebookName, params.NotebookKey, params.Query, *params.RegexSearch)
+	entries, err := services.SearchNotebookEntries(*params.NotebookName, *params.NotebookKey, *params.Query, *params.RegexSearch)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return
@@ -160,7 +160,7 @@ func DeleteNotebookEntry(c *gin.Context) {
 		return
 	}
 
-	err := services.DeleteNotebookEntry(params.NotebookName, params.NotebookKey, params.EntryName)
+	err := services.DeleteNotebookEntry(*params.NotebookName, *params.NotebookKey, *params.EntryName)
 	if err != nil {
 		services.JSONError(c, err.Error())
 		return

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Sort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 import { NotebookService } from '../../services/notebook/notebook.service';
 import { EncryptedNotebook } from '../../services/notebook/notebook.interface';
+import { CreateNotebookDialogComponent } from '../create-notebook-dialog/create-notebook-dialog.component';
 import { sortData } from '../../util';
 
 /**
@@ -17,7 +19,10 @@ export class HomeComponent implements OnInit {
   public notebooks: EncryptedNotebook[] = [];
   public sortedNotebooks: EncryptedNotebook[] = [];
 
-  constructor(private readonly notebookService: NotebookService) {}
+  constructor(
+    private readonly createNotebookDialog: MatDialog,
+    private readonly notebookService: NotebookService
+  ) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getNotebooks();
@@ -35,9 +40,20 @@ export class HomeComponent implements OnInit {
   }
 
   /**
-   * Create a new notebook.
+   * Open the dialog to create a new notebook.
    */
-  public async createNotebook(): Promise<void> {}
+  public openCreateNotebookDialog(): void {
+    const dialogRef = this.createNotebookDialog.open<
+      CreateNotebookDialogComponent,
+      {},
+      {}
+    >(CreateNotebookDialogComponent);
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.getNotebooks();
+      }
+    });
+  }
 
   /**
    * Sort the existing notebooks.

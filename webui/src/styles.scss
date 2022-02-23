@@ -19,7 +19,7 @@ $eno-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$eno-theme: mat.define-dark-theme(
+$eno-theme: mat.define-light-theme(
   (
     color: (
       primary: $eno-primary,
