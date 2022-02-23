@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Sort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { NotebookService } from '../../services/notebook/notebook.service';
@@ -20,6 +21,7 @@ export class HomeComponent implements OnInit {
   public sortedNotebooks: EncryptedNotebook[] = [];
 
   constructor(
+    private readonly router: Router,
     private readonly createNotebookDialog: MatDialog,
     private readonly notebookService: NotebookService
   ) {}
@@ -62,5 +64,14 @@ export class HomeComponent implements OnInit {
    */
   public sortNotebooks(sort: Sort): void {
     this.sortedNotebooks = sortData(this.notebooks, sort);
+  }
+
+  /**
+   * Open a notebook.
+   *
+   * @param notebookName The name of the notebook.
+   */
+  public async openNotebook(notebookName: string): Promise<void> {
+    await this.router.navigate(['notebook', notebookName]);
   }
 }

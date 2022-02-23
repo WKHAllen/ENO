@@ -23,6 +23,7 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { InfoComponent } from './components/info/info.component';
 import { ActionCardComponent } from './components/action-card/action-card.component';
 import { CreateNotebookDialogComponent } from './components/create-notebook-dialog/create-notebook-dialog.component';
+import { NotebookComponent } from './components/notebook/notebook.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -40,6 +41,7 @@ import { ErrorService } from './services/error/error.service';
     InfoComponent,
     ActionCardComponent,
     CreateNotebookDialogComponent,
+    NotebookComponent,
   ],
   imports: [
     BrowserModule,

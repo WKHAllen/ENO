@@ -10,11 +10,20 @@
       padding: 8px;
 
       .notebooks {
+        border-collapse: collapse;
+
         tr > * {
           padding: 8px;
         }
 
         .notebook {
+          cursor: pointer;
+          transition: background-color 0.1s linear;
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 8%);
+          }
+
           .notebook-name,
           .notebook-description,
           .notebook-create-time,

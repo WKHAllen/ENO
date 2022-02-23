@@ -29,7 +29,11 @@
           <th mat-sort-header="createTime">Created</th>
           <th mat-sort-header="editTime">Edited</th>
         </tr>
-        <tr *ngFor="let notebook of sortedNotebooks" class="notebook">
+        <tr
+          *ngFor="let notebook of sortedNotebooks"
+          class="notebook"
+          (click)="openNotebook(notebook.name)"
+        >
           <td>
             <span class="notebook-name">{{ notebook.name }}</span>
           </td>
