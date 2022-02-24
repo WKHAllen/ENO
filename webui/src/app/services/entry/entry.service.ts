@@ -10,7 +10,7 @@ import { NotebookEntry } from '../notebook/notebook.interface';
   providedIn: 'root',
 })
 export class EntryService {
-  private readonly subPath = 'entry/';
+  private readonly subPath = 'entry';
 
   constructor(private readonly api: APIService) {}
 
@@ -45,7 +45,7 @@ export class EntryService {
     notebookName: string,
     notebookKey: string
   ): Promise<NotebookEntryMap> {
-    return this.api.get<NotebookEntryMap>(this.subPath + 'all', {
+    return this.api.get<NotebookEntryMap>(this.subPath + '/all', {
       notebookName,
       notebookKey,
     });
@@ -86,7 +86,7 @@ export class EntryService {
     entryName: string,
     newEntryName: string
   ): Promise<NotebookEntry> {
-    return this.api.patch<NotebookEntry>(this.subPath + 'name', {
+    return this.api.patch<NotebookEntry>(this.subPath + '/name', {
       notebookName,
       notebookKey,
       entryName,
@@ -109,7 +109,7 @@ export class EntryService {
     entryName: string,
     newContent: string
   ): Promise<NotebookEntry> {
-    return this.api.patch<NotebookEntry>(this.subPath + 'content', {
+    return this.api.patch<NotebookEntry>(this.subPath + '/content', {
       notebookName,
       notebookKey,
       entryName,
@@ -132,7 +132,7 @@ export class EntryService {
     query: string,
     regexSearch: boolean
   ): Promise<NotebookEntryMap> {
-    return this.api.get<NotebookEntryMap>(this.subPath + 'search', {
+    return this.api.get<NotebookEntryMap>(this.subPath + '/search', {
       notebookName,
       notebookKey,
       query,

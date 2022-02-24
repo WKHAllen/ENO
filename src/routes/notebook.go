@@ -12,6 +12,10 @@ type CreateNotebookParams struct {
 	Key         *string `form:"key"         binding:"required"`
 }
 
+type GetNotebookDetailsParams struct {
+	Name *string `form:"name" binding:"required"`
+}
+
 type OpenNotebookParams struct {
 	Name *string `form:"name" binding:"required"`
 	Key  *string `form:"key"  binding:"required"`
@@ -58,6 +62,23 @@ func ListNotebooks(c *gin.Context) {
 	}
 
 	services.JSONResponse(c, notebooks)
+}
+
+// GetNotebookDetails gets a specified notebook's details.
+func GetNotebookDetails(c *gin.Context) {
+	var params GetNotebookDetailsParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		services.JSONError(c, err.Error())
+		return
+	}
+
+	notebookDetails, err := services.GetNotebookDetails(*params.Name)
+	if err != nil {
+		services.JSONError(c, err.Error())
+		return
+	}
+
+	services.JSONResponse(c, notebookDetails)
 }
 
 // OpenNotebook opens a specified notebook.

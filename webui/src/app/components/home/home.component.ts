@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly createNotebookDialog: MatDialog,
+    private readonly dialogService: MatDialog,
     private readonly notebookService: NotebookService
   ) {}
 
@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
    * Open the dialog to create a new notebook.
    */
   public openCreateNotebookDialog(): void {
-    const dialogRef = this.createNotebookDialog.open<
+    const dialogRef = this.dialogService.open<
       CreateNotebookDialogComponent,
       {},
       {}

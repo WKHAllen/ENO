@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { APIService } from '../api/api.service';
-import { DecryptedNotebook, EncryptedNotebook } from './notebook.interface';
+import {
+  DecryptedNotebook,
+  EncryptedNotebook,
+  NotebookDetails,
+} from './notebook.interface';
 
 /**
  * Notebook service.
@@ -9,7 +13,7 @@ import { DecryptedNotebook, EncryptedNotebook } from './notebook.interface';
   providedIn: 'root',
 })
 export class NotebookService {
-  private readonly subPath = 'notebook/';
+  private readonly subPath = 'notebook';
 
   constructor(private readonly api: APIService) {}
 
@@ -39,7 +43,17 @@ export class NotebookService {
    * @returns All encrypted notebooks.
    */
   public async listNotebooks(): Promise<EncryptedNotebook[]> {
-    return this.api.get<EncryptedNotebook[]>(this.subPath + 'all');
+    return this.api.get<EncryptedNotebook[]>(this.subPath + '/all');
+  }
+
+  /**
+   * Get a notebook's details.
+   *
+   * @param name The notebook's name.
+   * @returns The notebook's details.
+   */
+  public async getNotebookDetails(name: string): Promise<NotebookDetails> {
+    return this.api.get<NotebookDetails>(this.subPath + '/details', { name });
   }
 
   /**
@@ -67,7 +81,7 @@ export class NotebookService {
     name: string,
     newName: string
   ): Promise<EncryptedNotebook> {
-    return this.api.patch<EncryptedNotebook>(this.subPath + 'name', {
+    return this.api.patch<EncryptedNotebook>(this.subPath + '/name', {
       name,
       newName,
     });
@@ -84,7 +98,7 @@ export class NotebookService {
     name: string,
     newDescription: string
   ): Promise<EncryptedNotebook> {
-    return this.api.patch<EncryptedNotebook>(this.subPath + 'description', {
+    return this.api.patch<EncryptedNotebook>(this.subPath + '/description', {
       name,
       newDescription,
     });

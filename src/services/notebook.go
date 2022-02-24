@@ -61,6 +61,14 @@ type DecryptedNotebook struct {
 	Content     NotebookContent `json:"content"`
 }
 
+// NotebookDetails represents a notebook's details.
+type NotebookDetails struct {
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	CreateTime  time.Time `json:"createTime"`
+	EditTime    time.Time `json:"editTime"`
+}
+
 // ensureNotebooksDirExists will create the notebooks directory if it does not exist.
 func ensureNotebooksDirExists() {
 	if _, err := os.Stat(notebooksDir); errors.Is(err, fs.ErrNotExist) {
@@ -307,6 +315,27 @@ func ListNotebooks() ([]*EncryptedNotebook, error) {
 	}
 
 	return notebooks, nil
+}
+
+/*
+GetNotebookDetails attempts to retrieve a specified notebook's details.
+
+	name:    the notebook's name.
+
+	returns: the notebook's details, or an error.
+*/
+func GetNotebookDetails(name string) (*NotebookDetails, error) {
+	encryptedNotebook, err := readNotebook(name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &NotebookDetails{
+		Name: encryptedNotebook.Name,
+		Description: encryptedNotebook.Description,
+		CreateTime: encryptedNotebook.CreateTime,
+		EditTime: encryptedNotebook.EditTime,
+	}, nil
 }
 
 /*

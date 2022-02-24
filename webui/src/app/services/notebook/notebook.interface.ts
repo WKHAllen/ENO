@@ -38,3 +38,13 @@ export interface DecryptedNotebook {
   editTime: Date;
   content: NotebookContent;
 }
+
+/**
+ * A notebook's details.
+ */
+export interface NotebookDetails {
+  name: string;
+  description: string;
+  createTime: Date;
+  editTime: Date;
+}

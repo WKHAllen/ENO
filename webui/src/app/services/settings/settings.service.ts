@@ -9,7 +9,7 @@ import { Settings } from './settings.interface';
   providedIn: 'root',
 })
 export class SettingsService {
-  private readonly subPath = 'settings/';
+  private readonly subPath = 'settings';
 
   constructor(private readonly api: APIService) {}
 
@@ -19,7 +19,7 @@ export class SettingsService {
    * @returns The app settings.
    */
   public getSettings(): Promise<Settings> {
-    return this.api.get<Settings>(this.subPath + 'all');
+    return this.api.get<Settings>(this.subPath + '/all');
   }
 
   /**

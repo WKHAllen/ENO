@@ -8,7 +8,7 @@ import { APIService } from '../api/api.service';
   providedIn: 'root',
 })
 export class WindowService {
-  private readonly subPath = 'window/';
+  private readonly subPath = 'window';
 
   constructor(private readonly api: APIService) {
     // Look for changes in the title element.
@@ -39,6 +39,6 @@ export class WindowService {
    * @param title The window title.
    */
   public async setWindowTitle(title: string): Promise<void> {
-    return this.api.patch(this.subPath + 'title', { title });
+    return this.api.patch(this.subPath + '/title', { title });
   }
 }

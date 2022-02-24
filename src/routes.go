@@ -15,6 +15,7 @@ func LoadRoutes(router *gin.Engine, path string) {
 	notebookGroup := group.Group("notebook")
 	notebookGroup.POST(  "",            routes.CreateNotebook)
 	notebookGroup.GET(   "all",         routes.ListNotebooks)
+	notebookGroup.GET(   "details",     routes.GetNotebookDetails)
 	notebookGroup.GET(   "",            routes.OpenNotebook)
 	notebookGroup.PATCH( "name",        routes.SetNotebookName)
 	notebookGroup.PATCH( "description", routes.SetNotebookDescription)
