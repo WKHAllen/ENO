@@ -1,4 +1,5 @@
 $action-card-border-color: #cfcfcf;
+$app-max-width: 1200px;
 
 html,
 body {
@@ -67,6 +68,25 @@ a.text-link {
 
 .max-width {
   width: 100%;
+}
+
+.inline-list {
+  padding-inline-start: 0;
+  text-align: center;
+
+  li {
+    list-style: none;
+    display: inline;
+
+    &:after {
+      content: " \2022  ";
+      padding: 0 8px;
+    }
+
+    &:last-child:after {
+      content: none;
+    }
+  }
 }
 
 .snackbar {

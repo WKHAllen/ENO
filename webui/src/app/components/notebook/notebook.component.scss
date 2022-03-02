@@ -1,0 +1,37 @@
+@use "../../../globals";
+
+.notebook {
+  padding: 16px;
+  max-width: globals.$app-max-width;
+  margin: 0 auto;
+
+  .notebook-card {
+    .notebook-entries {
+      padding: 8px;
+
+      .entries {
+        border-collapse: collapse;
+        width: 100%;
+
+        tr > * {
+          padding: 8px;
+        }
+
+        .entry {
+          cursor: pointer;
+          transition: background-color 0.1s linear;
+
+          &:hover {
+            background-color: rgba(0, 0, 0, 8%);
+          }
+
+          .entry-name,
+          .entry-create-time,
+          .entry-edit-time {
+            @include globals.line-cutoff(1);
+          }
+        }
+      }
+    }
+  }
+}

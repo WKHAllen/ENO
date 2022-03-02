@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
+import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
+import { EntryService } from '../../services/entry/entry.service';
 import { ErrorService } from '../../services/error/error.service';
 import {
   OpenNotebookDialogComponent,
@@ -12,7 +14,9 @@ import {
 import {
   DecryptedNotebook,
   NotebookDetails,
+  NotebookEntry,
 } from '../../services/notebook/notebook.interface';
+import { sortData } from '../../util';
 
 /**
  * View and edit a notebook.
@@ -23,16 +27,21 @@ import {
   styleUrls: ['./notebook.component.scss'],
 })
 export class NotebookComponent implements OnInit {
+  public loading = true;
   private notebookName = '';
   private notebookKey = '';
   public notebookDetails: NotebookDetails | undefined;
   public notebook: DecryptedNotebook | undefined;
+  public sortedEntries: NotebookEntry[] = [];
+  public numEntries = 0;
 
   constructor(
+    private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
     private readonly dialogService: MatDialog,
     private readonly notebookService: NotebookService,
+    private readonly entryService: EntryService,
     private readonly errorService: ErrorService
   ) {}
 
@@ -44,6 +53,8 @@ export class NotebookComponent implements OnInit {
         this.notebookDetails = await this.notebookService.getNotebookDetails(
           this.notebookName
         );
+
+        this.loading = false;
       } catch (err) {
         this.errorService.showError({
           message: String(err),
@@ -55,16 +66,7 @@ export class NotebookComponent implements OnInit {
         this.notebookKey = queryParamMap.get('key') || '';
 
         if (this.notebookKey !== '') {
-          try {
-            this.notebook = await this.notebookService.openNotebook(
-              this.notebookName,
-              this.notebookKey
-            );
-          } catch (err) {
-            this.errorService.showError({
-              message: String(err),
-            });
-          }
+          await this.getNotebook();
         } else {
           const dialog = this.dialogService.open<
             OpenNotebookDialogComponent,
@@ -79,12 +81,79 @@ export class NotebookComponent implements OnInit {
           dialog.afterClosed().subscribe((result) => {
             if (result) {
               this.notebook = result.notebook;
+              this.notebookKey = result.notebookKey;
             } else {
               this.location.back();
             }
+
+            this.loading = false;
           });
         }
       });
     });
   }
+
+  /**
+   * Retrieve the notebook.
+   */
+  public async getNotebook(): Promise<void> {
+    this.loading = true;
+
+    try {
+      this.notebook = await this.notebookService.openNotebook(
+        this.notebookName,
+        this.notebookKey
+      );
+      this.numEntries = Object.keys(this.notebook.content.entries).length;
+    } catch (err) {
+      this.errorService.showError({
+        message: String(err),
+      });
+    }
+
+    this.loading = false;
+  }
+
+  /**
+   * Sort the existing notebook entries.
+   *
+   * @param sort The sort parameters.
+   */
+  public sortEntries(sort: Sort): void {
+    if (this.notebook) {
+      this.sortedEntries = sortData(
+        Object.values(this.notebook.content.entries),
+        sort
+      );
+    }
+  }
+
+  /**
+   * Open a notebook entry.
+   *
+   * @param notebookName The name of the notebook entry.
+   */
+  public async openEntry(entryName: string): Promise<void> {
+    await this.router.navigate([
+      'notebook',
+      this.notebook?.name,
+      'entry',
+      entryName,
+    ]);
+  }
+
+  /**
+   * Open the entry creation dialog.
+   */
+  public openCreateEntryDialog(): void {}
+
+  /**
+   * Open the entry editing dialog.
+   */
+  public openEditNotebookDialog(): void {}
+
+  /**
+   * Open the entry deletion confirmation dialog.
+   */
+  public openDeleteNotebookConfirmationDialog(): void {}
 }

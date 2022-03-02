@@ -2,7 +2,7 @@
 
 .notebooks-card-container {
   padding: 16px;
-  max-width: 1200px;
+  max-width: globals.$app-max-width;
   margin: 0 auto;
 
   .notebooks-card {
@@ -11,6 +11,7 @@
 
       .notebooks {
         border-collapse: collapse;
+        width: 100%;
 
         tr > * {
           padding: 8px;

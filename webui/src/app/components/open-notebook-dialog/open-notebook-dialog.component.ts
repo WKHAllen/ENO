@@ -20,6 +20,7 @@ export interface OpenNotebookDialogData {
  */
 export interface OpenNotebookDialogReturn {
   notebook: DecryptedNotebook;
+  notebookKey: string;
 }
 
 /**
@@ -71,7 +72,7 @@ export class OpenNotebookDialogComponent {
         form.notebookKey
       );
 
-      this.close({ notebook });
+      this.close({ notebook, notebookKey: form.notebookKey });
     } catch (err) {
       this.errorService.showError({
         message: String(err),

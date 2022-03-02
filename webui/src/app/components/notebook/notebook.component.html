@@ -1,1 +1,86 @@
-<pre>{{ notebook || notebookDetails | json }}</pre>
+<div *ngIf="!loading; else loadingTemplate" class="notebook">
+  <div>
+    <h1 class="text-center">{{ notebookDetails?.name || "Notebook" }}</h1>
+    <p class="text-center">{{ notebookDetails?.description || "" }}</p>
+    <ul class="inline-list">
+      <li>Created {{ notebookDetails?.createTime | date }}</li>
+      <li>Edited {{ notebookDetails?.editTime | date }}</li>
+    </ul>
+  </div>
+  <eno-action-card *ngIf="notebook" class="notebook-card">
+    <div>
+      <a mat-icon-button routerLink="/" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <button
+        mat-icon-button
+        (click)="getNotebook()"
+        matTooltip="Refresh notebook"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="openCreateEntryDialog()"
+        matTooltip="New entry"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="openEditNotebookDialog()"
+        matTooltip="Edit notebook"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="openDeleteNotebookConfirmationDialog()"
+        matTooltip="Delete notebook"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div class="notebook-entries">
+      <table
+        *ngIf="numEntries > 0; else noEntriesTemplate"
+        matSort
+        (matSortChange)="sortEntries($event)"
+        class="entries"
+      >
+        <tr>
+          <th mat-sort-header="name">Entry name</th>
+          <th mat-sort-header="createTime">Created</th>
+          <th mat-sort-header="editTime">Edited</th>
+        </tr>
+        <tr
+          *ngFor="let entry of sortedEntries"
+          class="entry"
+          (click)="openEntry(entry.name)"
+        >
+          <td>
+            <span class="entry-name">{{ entry.name }}</span>
+          </td>
+          <td>
+            <span class="entry-create-time">{{
+              entry.createTime | date: "medium"
+            }}</span>
+          </td>
+          <td>
+            <span class="entry-edit-time">{{
+              entry.editTime | date: "medium"
+            }}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </eno-action-card>
+</div>
+
+<ng-template #loadingTemplate>
+  <eno-spinner></eno-spinner>
+</ng-template>
+
+<ng-template #noEntriesTemplate>
+  <eno-info>You have no entries in this notebook</eno-info>
+</ng-template>
