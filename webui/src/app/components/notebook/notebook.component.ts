@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
-import { EntryService } from '../../services/entry/entry.service';
 import { ErrorService } from '../../services/error/error.service';
 import {
   OpenNotebookDialogComponent,
@@ -41,7 +40,6 @@ export class NotebookComponent implements OnInit {
     private readonly location: Location,
     private readonly dialogService: MatDialog,
     private readonly notebookService: NotebookService,
-    private readonly entryService: EntryService,
     private readonly errorService: ErrorService
   ) {}
 

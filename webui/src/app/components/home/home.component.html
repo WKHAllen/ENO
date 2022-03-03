@@ -43,12 +43,12 @@
           </td>
           <td>
             <span class="notebook-create-time">{{
-              notebook.createTime | date: "medium"
+              notebook.createTime | nullableDate: "Never":"medium"
             }}</span>
           </td>
           <td>
             <span class="notebook-edit-time">{{
-              notebook.editTime | date: "medium"
+              notebook.editTime | nullableDate: "Never":"medium"
             }}</span>
           </td>
         </tr>

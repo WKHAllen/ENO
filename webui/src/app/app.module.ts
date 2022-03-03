@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatePipe } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -33,6 +34,8 @@ import { SettingsService } from './services/settings/settings.service';
 import { WindowService } from './services/window/window.service';
 import { ErrorService } from './services/error/error.service';
 
+import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +47,7 @@ import { ErrorService } from './services/error/error.service';
     CreateNotebookDialogComponent,
     NotebookComponent,
     OpenNotebookDialogComponent,
+    NullableDatePipe,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +67,7 @@ import { ErrorService } from './services/error/error.service';
     MatTooltipModule,
   ],
   providers: [
+    DatePipe,
     APIService,
     NotebookService,
     EntryService,
