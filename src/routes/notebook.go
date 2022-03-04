@@ -31,6 +31,12 @@ type SetNotebookDescriptionParams struct {
 	NewDescription *string `form:"newDescription" binding:"required"`
 }
 
+type SetNotebookKeyParams struct {
+	Name   *string `form:"name"   binding:"required"`
+	Key    *string `form:"key"    binding:"required"`
+	NewKey *string `form:"newKey" binding:"required"`
+}
+
 type DeleteNotebookParams struct {
 	Name *string `form:"name" binding:"required"`
 	Key  *string `form:"key"  bindign:"required"`
@@ -130,6 +136,23 @@ func SetNotebookDescription(c *gin.Context) {
 	}
 
 	services.JSONResponse(c, notebook)
+}
+
+// SetNotebookKey sets a notebook's key.
+func SetNotebookKey(c *gin.Context) {
+	var params SetNotebookKeyParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		services.JSONError(c, err.Error())
+		return
+	}
+
+	err := services.SetNotebookKey(*params.Name, *params.Key, *params.NewKey)
+	if err != nil {
+		services.JSONError(c, err.Error())
+		return
+	}
+
+	services.JSONResponse(c, nil)
 }
 
 // DeleteNotebook deletes a notebook.

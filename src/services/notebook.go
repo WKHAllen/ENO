@@ -264,16 +264,9 @@ func CreateNotebook(name string, description string, key string) (*DecryptedNote
 		return nil, err
 	}
 
-	encryptedNotebookJson, err := json.Marshal(encryptedNotebook)
+	err = writeNotebook(encryptedNotebook)
 	if err != nil {
-		log.Printf("Error occurred stringifying notebook file JSON (%s): %s", filepath, err)
-		return nil, fmt.Errorf("an unexpected error occurred while creating the notebook, check the logs for more details")
-	}
-
-	err = os.WriteFile(filepath, encryptedNotebookJson, 0755)
-	if err != nil {
-		log.Printf("Error occurred writing notebook file (%s): %s", filepath, err)
-		return nil, fmt.Errorf("an unexpected error occurred while creating the notebook, check the logs for more details")
+		return nil, err
 	}
 
 	return notebook, nil
@@ -399,7 +392,7 @@ func SetNotebookName(name string, newName string) (*EncryptedNotebook, error) {
 /*
 SetNotebookDescription changes a notebook's description.
 
-	path:           the notebook's name.
+	name:           the notebook's name.
 	newDescription: the notebook's new description.
 
 	returns:        the updated notebook, or an error.
@@ -425,9 +418,41 @@ func SetNotebookDescription(name string, newDescription string) (*EncryptedNoteb
 }
 
 /*
+SetNotebookKey changes a notebook's key.
+
+	name:    the notebook's name.
+	key:     the notebook key.
+	newKey:  the new notebook key.
+
+	returns: an error, if one occurs.
+*/
+func SetNotebookKey(name string, key string, newKey string) error {
+	if len(newKey) < notebookKeyMinLength || len(newKey) > notebookKeyMaxLength {
+		return fmt.Errorf("notebook key must be between %d and %d characters in length", notebookKeyMinLength, notebookKeyMaxLength)
+	}
+
+	notebook, err := OpenNotebook(name, key)
+	if err != nil {
+		return err
+	}
+
+	encryptedNotebook, err := encryptNotebook(notebook, newKey)
+	if err != nil {
+		return err
+	}
+
+	err = writeNotebook(encryptedNotebook)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
 DeleteNotebook deletes a notebook from the file system and requires the notebook key as confirmation.
 
-	path:    the notebook's name.
+	name:    the notebook's name.
 	key:     the notebook key, used as deletion confirmation.
 
 	returns: an error, if one occurs.

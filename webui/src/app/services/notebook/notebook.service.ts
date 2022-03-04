@@ -105,6 +105,21 @@ export class NotebookService {
   }
 
   /**
+   * Set a notebook's key.
+   *
+   * @param name The notebook's name.
+   * @param key The notebook's key.
+   * @param newKey The notebook's new key.
+   */
+  public async setNotebookKey(
+    name: string,
+    key: string,
+    newKey: string
+  ): Promise<void> {
+    return this.api.patch(this.subPath + '/key', { name, key, newKey });
+  }
+
+  /**
    * Delete a notebook.
    *
    * @param name The notebook's name.

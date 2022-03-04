@@ -19,6 +19,7 @@ func LoadRoutes(router *gin.Engine, path string) {
 	notebookGroup.GET(   "",            routes.OpenNotebook)
 	notebookGroup.PATCH( "name",        routes.SetNotebookName)
 	notebookGroup.PATCH( "description", routes.SetNotebookDescription)
+	notebookGroup.PATCH( "key",         routes.SetNotebookKey)
 	notebookGroup.DELETE("",            routes.DeleteNotebook)
 
 	// Load entry routes
