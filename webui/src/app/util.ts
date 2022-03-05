@@ -16,6 +16,12 @@ export const notebookConstants = {
   notebookDescriptionMaxLength: 256,
   notebookKeyMinLength: 8,
   notebookKeyMaxLength: 256,
+  entryNameMinLength: 1,
+  entryNameMaxLength: 256,
+  entryContentMinLength: 0,
+  entryContentMaxLength: 65536,
+  entryQueryMinLength: 0,
+  entryQueryMaxLength: 1024,
 };
 
 /**

@@ -1,0 +1,42 @@
+<h1 class="text-center">Create a notebook entry</h1>
+<mat-dialog-content>
+  <p>
+    To create a new entry in the notebook "{{ data.notebookName }}", please name
+    the entry below.
+  </p>
+  <form
+    #createEntryForm="ngForm"
+    id="createEntryForm"
+    (ngSubmit)="createEntry(createEntryForm.value)"
+  >
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The name of the new entry"
+    >
+      <mat-label>Entry name</mat-label>
+      <input
+        matInput
+        type="text"
+        id="entryName"
+        name="entryName"
+        [minLength]="notebookConstants.entryNameMinLength"
+        [maxLength]="notebookConstants.entryNameMaxLength"
+        required
+        ngModel
+      />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    form="createEntryForm"
+    [disabled]="!createEntryForm.form.valid"
+  >
+    Create
+  </button>
+</mat-dialog-actions>

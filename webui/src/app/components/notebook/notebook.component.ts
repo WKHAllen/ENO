@@ -11,6 +11,11 @@ import {
   OpenNotebookDialogReturn,
 } from '../open-notebook-dialog/open-notebook-dialog.component';
 import {
+  CreateEntryDialogComponent,
+  CreateEntryDialogData,
+  CreateEntryDialogReturn,
+} from '../create-entry-dialog/create-entry-dialog.component';
+import {
   DecryptedNotebook,
   NotebookDetails,
   NotebookEntry,
@@ -80,6 +85,10 @@ export class NotebookComponent implements OnInit {
             if (result) {
               this.notebook = result.notebook;
               this.notebookKey = result.notebookKey;
+              this.sortedEntries = Object.values(this.notebook.content.entries);
+              this.numEntries = Object.keys(
+                this.notebook.content.entries
+              ).length;
             } else {
               this.location.back();
             }
@@ -102,6 +111,7 @@ export class NotebookComponent implements OnInit {
         this.notebookName,
         this.notebookKey
       );
+      this.sortedEntries = Object.values(this.notebook.content.entries);
       this.numEntries = Object.keys(this.notebook.content.entries).length;
     } catch (err) {
       this.errorService.showError({
@@ -129,12 +139,12 @@ export class NotebookComponent implements OnInit {
   /**
    * Open a notebook entry.
    *
-   * @param notebookName The name of the notebook entry.
+   * @param entryName The name of the notebook entry.
    */
   public async openEntry(entryName: string): Promise<void> {
     await this.router.navigate([
       'notebook',
-      this.notebook?.name,
+      this.notebookName,
       'entry',
       entryName,
     ]);
@@ -143,7 +153,24 @@ export class NotebookComponent implements OnInit {
   /**
    * Open the entry creation dialog.
    */
-  public openCreateEntryDialog(): void {}
+  public openCreateEntryDialog(): void {
+    const dialog = this.dialogService.open<
+      CreateEntryDialogComponent,
+      CreateEntryDialogData,
+      CreateEntryDialogReturn
+    >(CreateEntryDialogComponent, {
+      data: {
+        notebookName: this.notebookName,
+        notebookKey: this.notebookKey,
+      },
+    });
+
+    dialog.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.openEntry(result.entry.name);
+      }
+    });
+  }
 
   /**
    * Open the entry editing dialog.

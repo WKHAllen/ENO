@@ -45,12 +45,13 @@ export class HomeComponent implements OnInit {
    * Open the dialog to create a new notebook.
    */
   public openCreateNotebookDialog(): void {
-    const dialogRef = this.dialogService.open<
+    const dialog = this.dialogService.open<
       CreateNotebookDialogComponent,
       {},
       {}
     >(CreateNotebookDialogComponent);
-    dialogRef.afterClosed().subscribe(async (result) => {
+
+    dialog.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.getNotebooks();
       }
