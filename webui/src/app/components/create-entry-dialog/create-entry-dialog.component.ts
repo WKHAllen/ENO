@@ -13,6 +13,9 @@ export interface CreateEntryDialogData {
   notebookKey: string;
 }
 
+/**
+ * The data returned from the create notebook entry dialog.
+ */
 export interface CreateEntryDialogReturn {
   entry: NotebookEntry;
 }
@@ -55,6 +58,11 @@ export class CreateEntryDialogComponent {
     this.dialogRef.close(result);
   }
 
+  /**
+   * Create a new entry.
+   *
+   * @param form The create entry form.
+   */
   public async createEntry(form: CreateEntryForm): Promise<void> {
     try {
       const entry = await this.entryService.createNotebookEntry(

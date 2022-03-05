@@ -27,6 +27,7 @@ import { CreateNotebookDialogComponent } from './components/create-notebook-dial
 import { NotebookComponent } from './components/notebook/notebook.component';
 import { OpenNotebookDialogComponent } from './components/open-notebook-dialog/open-notebook-dialog.component';
 import { CreateEntryDialogComponent } from './components/create-entry-dialog/create-entry-dialog.component';
+import { EditNotebookDialogComponent } from './components/edit-notebook-dialog/edit-notebook-dialog.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -49,6 +50,7 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     NotebookComponent,
     OpenNotebookDialogComponent,
     CreateEntryDialogComponent,
+    EditNotebookDialogComponent,
     NullableDatePipe,
   ],
   imports: [

@@ -1,0 +1,128 @@
+<h1 class="text-center">Edit notebook</h1>
+<mat-dialog-content>
+  <p>The notebook details can be modified below.</p>
+  <form
+    #editNotebookForm="ngForm"
+    id="editNotebookForm"
+    (ngSubmit)="editNotebook(editNotebookForm.value)"
+  >
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The name of the notebook"
+    >
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        type="text"
+        id="notebookName"
+        name="notebookName"
+        [minLength]="notebookConstants.notebookNameMinLength"
+        [maxLength]="notebookConstants.notebookNameMaxLength"
+        [ngModel]="notebookName"
+      />
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="A description of the notebook"
+    >
+      <mat-label>Description</mat-label>
+      <input
+        matInput
+        type="text"
+        id="notebookDescription"
+        name="notebookDescription"
+        [minLength]="notebookConstants.notebookDescriptionMinLength"
+        [maxLength]="notebookConstants.notebookDescriptionMaxLength"
+        [ngModel]="notebookDescription"
+      />
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The old key used for encrypting and decrypting the notebook"
+    >
+      <mat-label>Old key</mat-label>
+      <input
+        matInput
+        [type]="hideOldKey ? 'password' : 'text'"
+        id="oldNotebookKey"
+        name="oldNotebookKey"
+        [minLength]="notebookConstants.notebookKeyMinLength"
+        [maxLength]="notebookConstants.notebookKeyMaxLength"
+        ngModel
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideOldKey = !hideOldKey"
+      >
+        <mat-icon>{{ hideOldKey ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The new key to use for encrypting and decrypting the notebook"
+    >
+      <mat-label>New key</mat-label>
+      <input
+        matInput
+        [type]="hideNewKey ? 'password' : 'text'"
+        id="newNotebookKey"
+        name="newNotebookKey"
+        [minLength]="notebookConstants.notebookKeyMinLength"
+        [maxLength]="notebookConstants.notebookKeyMaxLength"
+        ngModel
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideNewKey = !hideNewKey"
+      >
+        <mat-icon>{{ hideNewKey ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="Confirm the new encryption key"
+    >
+      <mat-label>Confirm new key</mat-label>
+      <input
+        matInput
+        [type]="hideConfirmNewKey ? 'password' : 'text'"
+        id="confirmNewNotebookKey"
+        name="confirmNewNotebookKey"
+        [minLength]="notebookConstants.notebookKeyMinLength"
+        [maxLength]="notebookConstants.notebookKeyMaxLength"
+        ngModel
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideConfirmNewKey = !hideConfirmNewKey"
+      >
+        <mat-icon>{{
+          hideConfirmNewKey ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    form="editNotebookForm"
+    [disabled]="!editNotebookForm.form.valid"
+  >
+    Edit
+  </button>
+</mat-dialog-actions>

@@ -1,14 +1,25 @@
 <div *ngIf="!loading; else loadingTemplate" class="notebook">
   <div>
-    <h1 class="text-center">{{ notebookDetails?.name || "Notebook" }}</h1>
-    <p class="text-center">{{ notebookDetails?.description || "" }}</p>
+    <h1 class="text-center">
+      {{ notebook?.name || notebookDetails?.name || "Notebook" }}
+    </h1>
+    <p class="text-center">
+      {{ notebook?.description || notebookDetails?.description || "" }}
+    </p>
     <ul class="inline-list">
       <li>
         Created:
-        {{ notebookDetails?.createTime | nullableDate: "Never":"medium" }}
+        {{
+          notebook?.createTime || notebookDetails?.createTime
+            | nullableDate: "Never":"medium"
+        }}
       </li>
       <li>
-        Edited: {{ notebookDetails?.editTime | nullableDate: "Never":"medium" }}
+        Edited:
+        {{
+          notebook?.editTime || notebookDetails?.editTime
+            | nullableDate: "Never":"medium"
+        }}
       </li>
     </ul>
   </div>

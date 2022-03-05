@@ -16,6 +16,11 @@ import {
   CreateEntryDialogReturn,
 } from '../create-entry-dialog/create-entry-dialog.component';
 import {
+  EditNotebookDialogComponent,
+  EditNotebookDialogData,
+  EditNotebookDialogReturn,
+} from '../edit-notebook-dialog/edit-notebook-dialog.component';
+import {
   DecryptedNotebook,
   NotebookDetails,
   NotebookEntry,
@@ -175,7 +180,28 @@ export class NotebookComponent implements OnInit {
   /**
    * Open the entry editing dialog.
    */
-  public openEditNotebookDialog(): void {}
+  public openEditNotebookDialog(): void {
+    const dialog = this.dialogService.open<
+      EditNotebookDialogComponent,
+      EditNotebookDialogData,
+      EditNotebookDialogReturn
+    >(EditNotebookDialogComponent, {
+      data: {
+        notebookName: this.notebookName,
+        notebookDescription: (this.notebook?.description ||
+          this.notebookDetails?.description) as string,
+        notebookKey: this.notebookKey,
+      },
+    });
+
+    dialog.afterClosed().subscribe(async (result) => {
+      if (result) {
+        this.notebookName = result.notebookName;
+        this.notebookKey = result.notebookKey;
+        await this.getNotebook();
+      }
+    });
+  }
 
   /**
    * Open the entry deletion confirmation dialog.
