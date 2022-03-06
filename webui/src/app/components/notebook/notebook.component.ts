@@ -143,12 +143,10 @@ export class NotebookComponent implements OnInit {
    * @param entryName The name of the notebook entry.
    */
   public async openEntry(entryName: string): Promise<void> {
-    await this.router.navigate([
-      'notebook',
-      this.notebookName,
-      'entry',
-      entryName,
-    ]);
+    await this.router.navigate(
+      ['notebook', this.notebookName, 'entry', entryName],
+      { queryParams: { key: this.notebookKey } }
+    );
   }
 
   /**
@@ -172,7 +170,7 @@ export class NotebookComponent implements OnInit {
   }
 
   /**
-   * Open the entry editing dialog.
+   * Open the notebook editing dialog.
    */
   public async openEditNotebookDialog(): Promise<void> {
     try {
@@ -196,7 +194,7 @@ export class NotebookComponent implements OnInit {
   }
 
   /**
-   * Open the entry deletion confirmation dialog.
+   * Open the notebook deletion confirmation dialog.
    */
   public async openDeleteNotebookConfirmationDialog(): Promise<void> {
     const confirmed = await this.dialogService.showConfirmationDialog({

@@ -1,0 +1,65 @@
+@use "../../../globals";
+
+$editor-padding: 16px;
+
+.markdown-editor {
+  display: flex;
+  flex-direction: row;
+
+  .editor {
+    flex-grow: 0;
+    border-right: 1px solid globals.$action-card-border-color;
+    display: flex;
+    flex-direction: column;
+
+    .editor-actions {
+      flex-grow: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: right;
+    }
+
+    .editor-content {
+      flex-grow: 1;
+      padding: $editor-padding;
+      display: none;
+    }
+
+    &.expand {
+      flex-grow: 1;
+      flex-basis: 100%;
+
+      .editor-content {
+        display: block;
+      }
+    }
+  }
+
+  .viewer {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+
+    .viewer-actions {
+      flex-grow: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+    }
+
+    .viewer-content {
+      flex-grow: 1;
+      padding: $editor-padding;
+      display: none;
+    }
+
+    &.expand {
+      flex-grow: 1;
+      flex-basis: 100%;
+
+      .viewer-content {
+        display: block;
+      }
+    }
+  }
+}

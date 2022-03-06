@@ -34,7 +34,7 @@ a {
   color: inherit;
 }
 
-a.text-link {
+@mixin text-link {
   color: blue;
   text-decoration: none;
   transition: color 0.1s ease;
@@ -47,6 +47,10 @@ a.text-link {
   &:active {
     color: darken(blue, 25%);
   }
+}
+
+a.text-link {
+  @include text-link;
 }
 
 @mixin line-cutoff($num-lines) {
@@ -92,6 +96,67 @@ a.text-link {
 .snackbar {
   .mat-simple-snackbar-action {
     color: #9f9f9f;
+  }
+}
+
+.entry-markdown {
+  & > *:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  h1 {
+    font-size: 2em;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  h2 {
+    font-size: 1.75em;
+  }
+
+  h3 {
+    font-size: 1.625em;
+  }
+
+  h4 {
+    font-size: 1.5em;
+  }
+
+  h5 {
+    font-size: 1.375em;
+  }
+
+  h6 {
+    font-size: 1.25em;
+  }
+
+  a {
+    @include text-link;
+  }
+
+  blockquote {
+    border-left: 4px solid rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    margin: 0;
+    padding: 0 12px;
+    color: rgba(0, 0, 0, 0.75);
+
+    ul {
+      margin-top: 0;
+      list-style-type: none;
+      padding-left: 24px;
+
+      li::before {
+        content: "-";
+        padding-right: 4px;
+      }
+    }
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 800px;
   }
 }
 

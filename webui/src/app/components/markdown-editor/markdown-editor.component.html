@@ -1,0 +1,71 @@
+<div class="markdown-editor">
+  <div
+    class="editor"
+    [ngClass]="{ expand: editorState === 'EDITOR' || editorState === 'BOTH' }"
+  >
+    <div class="editor-actions">
+      <button
+        *ngIf="editorState === 'VIEWER'"
+        mat-icon-button
+        (click)="setEditorState('BOTH')"
+        matTooltip="Expand editor"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button
+        *ngIf="editorState !== 'VIEWER'"
+        mat-icon-button
+        (click)="setEditorState('VIEWER')"
+        matTooltip="Hide editor"
+        [disabled]="editorState === 'EDITOR'"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+    </div>
+    <div class="editor-content">
+      <mat-form-field [appearance]="formAppearance" class="max-width">
+        <mat-label>Entry content</mat-label>
+        <textarea
+          matInput
+          type="text"
+          wrap="on"
+          id="content"
+          name="content"
+          [(ngModel)]="content"
+          (ngModelChange)="updateTextareaHeight()"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+  <div
+    class="viewer"
+    [ngClass]="{ expand: editorState === 'VIEWER' || editorState === 'BOTH' }"
+  >
+    <div class="viewer-actions">
+      <button
+        *ngIf="editorState === 'EDITOR'"
+        mat-icon-button
+        (click)="setEditorState('BOTH')"
+        matTooltip="Expand viewer"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        *ngIf="editorState !== 'EDITOR'"
+        mat-icon-button
+        (click)="setEditorState('EDITOR')"
+        matTooltip="Hide viewer"
+        [disabled]="editorState === 'VIEWER'"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    <div class="viewer-content">
+      <markdown
+        [data]="content"
+        ngPreserveWhitespaces
+        class="entry-markdown"
+      ></markdown>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { MarkdownModule } from 'ngx-markdown';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -29,6 +31,8 @@ import { OpenNotebookDialogComponent } from './components/open-notebook-dialog/o
 import { CreateEntryDialogComponent } from './components/create-entry-dialog/create-entry-dialog.component';
 import { EditNotebookDialogComponent } from './components/edit-notebook-dialog/edit-notebook-dialog.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { EntryComponent } from './components/entry/entry.component';
+import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -55,6 +59,8 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     EditNotebookDialogComponent,
     NullableDatePipe,
     ConfirmationDialogComponent,
+    EntryComponent,
+    MarkdownEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +78,7 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     MatSortModule,
     MatToolbarModule,
     MatTooltipModule,
+    MarkdownModule.forRoot(),
   ],
   providers: [
     DatePipe,

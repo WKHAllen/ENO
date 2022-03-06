@@ -1,0 +1,21 @@
+<div *ngIf="!loading; else loadingTemplate" class="entry">
+  <div>
+    <h1 class="text-center">{{ entry?.name || "Notebook entry" }}</h1>
+    <ul class="inline-list">
+      <li>Created: {{ entry?.createTime | nullableDate: "Never":"medium" }}</li>
+      <li>Edited: {{ entry?.editTime | nullableDate: "Never":"medium" }}</li>
+    </ul>
+  </div>
+  <eno-action-card *ngIf="entry" class="entry-card">
+    <div>
+      <!-- TODO: add entry actions -->
+    </div>
+    <div class="entry-content">
+      <eno-markdown-editor [content]="entry.content"></eno-markdown-editor>
+    </div>
+  </eno-action-card>
+</div>
+
+<ng-template #loadingTemplate>
+  <eno-spinner></eno-spinner>
+</ng-template>
