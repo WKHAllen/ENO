@@ -35,6 +35,7 @@ import { EntryService } from './services/entry/entry.service';
 import { SettingsService } from './services/settings/settings.service';
 import { WindowService } from './services/window/window.service';
 import { ErrorService } from './services/error/error.service';
+import { DialogService } from './services/dialog/dialog.service';
 
 import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
 
@@ -78,6 +79,7 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     SettingsService,
     WindowService,
     ErrorService,
+    DialogService,
   ],
   bootstrap: [AppComponent],
 })

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Sort } from '@angular/material/sort';
-import { MatDialog } from '@angular/material/dialog';
 import { NotebookService } from '../../services/notebook/notebook.service';
+import { DialogService } from '../../services/dialog/dialog.service';
 import { EncryptedNotebook } from '../../services/notebook/notebook.interface';
 import { CreateNotebookDialogComponent } from '../create-notebook-dialog/create-notebook-dialog.component';
 import { sortData } from '../../util';
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly dialogService: MatDialog,
+    private readonly dialogService: DialogService,
     private readonly notebookService: NotebookService
   ) {}
 
@@ -44,18 +44,18 @@ export class HomeComponent implements OnInit {
   /**
    * Open the dialog to create a new notebook.
    */
-  public openCreateNotebookDialog(): void {
-    const dialog = this.dialogService.open<
-      CreateNotebookDialogComponent,
-      {},
-      {}
-    >(CreateNotebookDialogComponent);
+  public async openCreateNotebookDialog(): Promise<void> {
+    try {
+      await this.dialogService.showDialog<
+        CreateNotebookDialogComponent,
+        {},
+        {}
+      >(CreateNotebookDialogComponent);
+    } catch (_) {
+      return;
+    }
 
-    dialog.afterClosed().subscribe(async (result) => {
-      if (result) {
-        await this.getNotebooks();
-      }
-    });
+    await this.getNotebooks();
   }
 
   /**

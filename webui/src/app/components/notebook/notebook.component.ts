@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
 import { ErrorService } from '../../services/error/error.service';
+import { DialogService } from '../../services/dialog/dialog.service';
 import {
   OpenNotebookDialogComponent,
   OpenNotebookDialogData,
@@ -48,7 +48,7 @@ export class NotebookComponent implements OnInit {
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
-    private readonly dialogService: MatDialog,
+    private readonly dialogService: DialogService,
     private readonly notebookService: NotebookService,
     private readonly errorService: ErrorService
   ) {}
@@ -76,30 +76,26 @@ export class NotebookComponent implements OnInit {
         if (this.notebookKey !== '') {
           await this.getNotebook();
         } else {
-          const dialog = this.dialogService.open<
-            OpenNotebookDialogComponent,
-            OpenNotebookDialogData,
-            OpenNotebookDialogReturn
-          >(OpenNotebookDialogComponent, {
-            data: {
-              notebookDetails: this.notebookDetails as NotebookDetails,
-            },
-          });
+          try {
+            const result = await this.dialogService.showDialog<
+              OpenNotebookDialogComponent,
+              OpenNotebookDialogData,
+              OpenNotebookDialogReturn
+            >(OpenNotebookDialogComponent, {
+              data: {
+                notebookDetails: this.notebookDetails as NotebookDetails,
+              },
+            });
 
-          dialog.afterClosed().subscribe((result) => {
-            if (result) {
-              this.notebook = result.notebook;
-              this.notebookKey = result.notebookKey;
-              this.sortedEntries = Object.values(this.notebook.content.entries);
-              this.numEntries = Object.keys(
-                this.notebook.content.entries
-              ).length;
-            } else {
-              this.location.back();
-            }
+            this.notebook = result.notebook;
+            this.notebookKey = result.notebookKey;
+            this.sortedEntries = Object.values(this.notebook.content.entries);
+            this.numEntries = Object.keys(this.notebook.content.entries).length;
+          } catch (_) {
+            this.location.back();
+          }
 
-            this.loading = false;
-          });
+          this.loading = false;
         }
       });
     });
@@ -158,49 +154,45 @@ export class NotebookComponent implements OnInit {
   /**
    * Open the entry creation dialog.
    */
-  public openCreateEntryDialog(): void {
-    const dialog = this.dialogService.open<
-      CreateEntryDialogComponent,
-      CreateEntryDialogData,
-      CreateEntryDialogReturn
-    >(CreateEntryDialogComponent, {
-      data: {
-        notebookName: this.notebookName,
-        notebookKey: this.notebookKey,
-      },
-    });
+  public async openCreateEntryDialog(): Promise<void> {
+    try {
+      const result = await this.dialogService.showDialog<
+        CreateEntryDialogComponent,
+        CreateEntryDialogData,
+        CreateEntryDialogReturn
+      >(CreateEntryDialogComponent, {
+        data: {
+          notebookName: this.notebookName,
+          notebookKey: this.notebookKey,
+        },
+      });
 
-    dialog.afterClosed().subscribe(async (result) => {
-      if (result) {
-        await this.openEntry(result.entry.name);
-      }
-    });
+      await this.openEntry(result.entry.name);
+    } catch (_) {}
   }
 
   /**
    * Open the entry editing dialog.
    */
-  public openEditNotebookDialog(): void {
-    const dialog = this.dialogService.open<
-      EditNotebookDialogComponent,
-      EditNotebookDialogData,
-      EditNotebookDialogReturn
-    >(EditNotebookDialogComponent, {
-      data: {
-        notebookName: this.notebookName,
-        notebookDescription: (this.notebook?.description ||
-          this.notebookDetails?.description) as string,
-        notebookKey: this.notebookKey,
-      },
-    });
+  public async openEditNotebookDialog(): Promise<void> {
+    try {
+      const result = await this.dialogService.showDialog<
+        EditNotebookDialogComponent,
+        EditNotebookDialogData,
+        EditNotebookDialogReturn
+      >(EditNotebookDialogComponent, {
+        data: {
+          notebookName: this.notebookName,
+          notebookDescription: (this.notebook?.description ||
+            this.notebookDetails?.description) as string,
+          notebookKey: this.notebookKey,
+        },
+      });
 
-    dialog.afterClosed().subscribe(async (result) => {
-      if (result) {
-        this.notebookName = result.notebookName;
-        this.notebookKey = result.notebookKey;
-        await this.getNotebook();
-      }
-    });
+      this.notebookName = result.notebookName;
+      this.notebookKey = result.notebookKey;
+      await this.getNotebook();
+    } catch (_) {}
   }
 
   /**
