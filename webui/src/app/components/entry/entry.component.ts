@@ -116,6 +116,15 @@ export class EntryComponent implements OnInit {
   }
 
   /**
+   * Called when the content changes.
+   *
+   * @param content The new content.
+   */
+  public onContentChange(content: string): void {
+    this.entryEditorContent = content;
+  }
+
+  /**
    * Open the notebook associated with the current entry.
    */
   public async openNotebook(): Promise<void> {
@@ -123,4 +132,56 @@ export class EntryComponent implements OnInit {
       queryParams: { key: this.notebookKey },
     });
   }
+
+  /**
+   * Return to the notebook and confirm that the entry gets saved.
+   */
+  public async backToNotebook(): Promise<void> {
+    if (this.entry?.content === this.entryEditorContent) {
+      await this.openNotebook();
+    } else {
+      const saveEdits = await this.dialogService.showConfirmationDialog({
+        data: {
+          title: 'Save on close',
+          text: 'You have unsaved edits to this entry. Would you like to save them before leaving?',
+          cancelLabel: 'No',
+          confirmLabel: 'Yes',
+        },
+      });
+
+      if (saveEdits) {
+        await this.saveEntry();
+      }
+
+      await this.openNotebook();
+    }
+  }
+
+  /**
+   * Save the entry content.
+   */
+  public async saveEntry(): Promise<void> {
+    try {
+      await this.entryService.setNotebookEntryContent(
+        this.notebookName,
+        this.notebookKey,
+        this.entryName,
+        this.entryEditorContent ?? ''
+      );
+    } catch (err) {
+      this.errorService.showError({
+        message: String(err),
+      });
+    }
+  }
+
+  /**
+   * Open the entry edit dialog.
+   */
+  public async openEditEntryDialog(): Promise<void> {}
+
+  /**
+   * Open the entry deletion confirmation dialog.
+   */
+  public async openDeleteEntryConfirmationDialog(): Promise<void> {}
 }

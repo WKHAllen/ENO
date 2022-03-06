@@ -8,10 +8,35 @@
   </div>
   <eno-action-card *ngIf="entry" class="entry-card">
     <div>
-      <!-- TODO: add entry actions -->
+      <button mat-icon-button (click)="backToNotebook()" matTooltop="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button mat-icon-button (click)="getEntry()" matTooltip="Refresh entry">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button (click)="saveEntry()" matTooltip="Save entry">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="openEditEntryDialog()"
+        matTooltip="Edit entry"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="openDeleteEntryConfirmationDialog()"
+        matTooltip="Delete entry"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
     <div class="entry-content">
-      <eno-markdown-editor [content]="entry.content"></eno-markdown-editor>
+      <eno-markdown-editor
+        [content]="entryEditorContent"
+        (onChange)="onContentChange($event)"
+      ></eno-markdown-editor>
     </div>
   </eno-action-card>
 </div>

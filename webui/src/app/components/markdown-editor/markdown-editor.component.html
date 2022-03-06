@@ -29,10 +29,10 @@
           matInput
           type="text"
           wrap="on"
-          id="content"
-          name="content"
+          id="markdown-editor-content"
+          name="markdown-editor-content"
           [(ngModel)]="content"
-          (ngModelChange)="updateTextareaHeight()"
+          (ngModelChange)="onContentChange()"
         ></textarea>
       </mat-form-field>
     </div>

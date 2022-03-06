@@ -29,11 +29,6 @@ body {
   }
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
 @mixin text-link {
   color: blue;
   text-decoration: none;
@@ -49,10 +44,6 @@ a {
   }
 }
 
-a.text-link {
-  @include text-link;
-}
-
 @mixin line-cutoff($num-lines) {
   -webkit-box-orient: vertical;
   display: -webkit-box;
@@ -60,6 +51,15 @@ a.text-link {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.text-link {
+  @include text-link;
 }
 
 .text-center {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { formAppearance } from '../../util';
 
 /**
@@ -14,11 +14,18 @@ export type MarkdownEditorState = 'EDITOR' | 'VIEWER' | 'BOTH';
   templateUrl: './markdown-editor.component.html',
   styleUrls: ['./markdown-editor.component.scss'],
 })
-export class MarkdownEditorComponent {
+export class MarkdownEditorComponent implements OnInit {
   @Input() content: string | undefined;
   @Input() initialState: MarkdownEditorState = 'BOTH';
+  @Output() onChange = new EventEmitter<string>();
   public editorState = this.initialState;
   public formAppearance = formAppearance;
+
+  public ngOnInit(): void {
+    setTimeout(() => {
+      this.updateTextareaHeight();
+    }, 100);
+  }
 
   /**
    * Set the editor state.
@@ -30,10 +37,20 @@ export class MarkdownEditorComponent {
   }
 
   /**
+   * Called when the content changes.
+   */
+  public onContentChange(): void {
+    this.onChange.emit(this.content);
+    this.updateTextareaHeight();
+  }
+
+  /**
    * Update the height of the textarea when the content inside changes.
    */
   public updateTextareaHeight(): void {
-    const textarea = document.getElementById('content') as HTMLElement;
+    const textarea = document.getElementById(
+      'markdown-editor-content'
+    ) as HTMLElement;
     textarea.style.height = '';
     textarea.style.height = textarea.scrollHeight + 10 + 'px';
   }
