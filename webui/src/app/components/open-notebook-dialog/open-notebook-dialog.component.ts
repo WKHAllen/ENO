@@ -45,7 +45,7 @@ export class OpenNotebookDialogComponent {
 
   constructor(
     private readonly dialogRef: MatDialogRef<
-      OpenNotebookDialogData,
+      OpenNotebookDialogComponent,
       OpenNotebookDialogReturn
     >,
     @Inject(MAT_DIALOG_DATA) public readonly data: OpenNotebookDialogData,

@@ -29,7 +29,7 @@ export class CreateNotebookDialogComponent {
   public formAppearance = formAppearance;
 
   constructor(
-    private readonly dialogRef: MatDialogRef<{}, {}>,
+    private readonly dialogRef: MatDialogRef<CreateNotebookDialogComponent, {}>,
     private readonly notebookService: NotebookService,
     private readonly errorService: ErrorService
   ) {}

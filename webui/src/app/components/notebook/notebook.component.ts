@@ -198,5 +198,27 @@ export class NotebookComponent implements OnInit {
   /**
    * Open the entry deletion confirmation dialog.
    */
-  public openDeleteNotebookConfirmationDialog(): void {}
+  public async openDeleteNotebookConfirmationDialog(): Promise<void> {
+    const confirmed = await this.dialogService.showConfirmationDialog({
+      data: {
+        title: 'Delete notebook',
+        text: 'Are you sure you want to delete this notebook? This action cannot be undone.',
+      },
+    });
+
+    if (confirmed) {
+      try {
+        await this.notebookService.deleteNotebook(
+          this.notebookName,
+          this.notebookKey
+        );
+
+        await this.router.navigate(['/']);
+      } catch (err) {
+        this.errorService.showError({
+          message: String(err),
+        });
+      }
+    }
+  }
 }

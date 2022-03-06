@@ -53,7 +53,7 @@ export class EditNotebookDialogComponent {
 
   constructor(
     private readonly dialogRef: MatDialogRef<
-      EditNotebookDialogData,
+      EditNotebookDialogComponent,
       EditNotebookDialogReturn
     >,
     @Inject(MAT_DIALOG_DATA) public readonly data: EditNotebookDialogData,

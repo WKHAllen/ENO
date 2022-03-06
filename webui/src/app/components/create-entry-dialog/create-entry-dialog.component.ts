@@ -41,7 +41,7 @@ export class CreateEntryDialogComponent {
 
   constructor(
     private readonly dialogRef: MatDialogRef<
-      CreateEntryDialogData,
+      CreateEntryDialogComponent,
       CreateEntryDialogReturn
     >,
     @Inject(MAT_DIALOG_DATA) public readonly data: CreateEntryDialogData,

@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogData,
+} from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 /**
  * Open dialogs and pass data to them.
@@ -32,6 +36,28 @@ export class DialogService {
           reject();
         }
       });
+    });
+  }
+
+  /**
+   * Open a confirmation dialog.
+   *
+   * @param config The dialog configuration.
+   * @returns Whether the action was confirmed.
+   */
+  public async showConfirmationDialog(
+    config: MatDialogConfig<ConfirmationDialogData>
+  ): Promise<boolean> {
+    return new Promise((resolve) => {
+      const dialog = this.dialog.open<
+        ConfirmationDialogComponent,
+        ConfirmationDialogData,
+        boolean
+      >(ConfirmationDialogComponent, config);
+
+      dialog
+        .afterClosed()
+        .subscribe((confirmed) => resolve(confirmed ?? false));
     });
   }
 }
