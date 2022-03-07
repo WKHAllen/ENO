@@ -167,7 +167,7 @@ export class EntryComponent implements OnInit {
    */
   public async saveEntry(): Promise<void> {
     try {
-      await this.entryService.setNotebookEntryContent(
+      this.entry = await this.entryService.setNotebookEntryContent(
         this.notebookName,
         this.notebookKey,
         this.entryName,
