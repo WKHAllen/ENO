@@ -142,9 +142,7 @@ export class EntryComponent implements OnInit {
    * Return to the notebook and confirm that the entry gets saved.
    */
   public async backToNotebook(): Promise<void> {
-    if (this.entry?.content === this.entryEditorContent) {
-      await this.openNotebook();
-    } else {
+    if (this.entry?.content !== this.entryEditorContent) {
       const saveEdits = await this.dialogService.showConfirmationDialog({
         data: {
           title: 'Save on close',
@@ -157,9 +155,31 @@ export class EntryComponent implements OnInit {
       if (saveEdits) {
         await this.saveEntry();
       }
-
-      await this.openNotebook();
     }
+
+    await this.openNotebook();
+  }
+
+  /**
+   * Refresh the entry.
+   */
+  public async refreshEntry(): Promise<void> {
+    if (this.entry?.content !== this.entryEditorContent) {
+      const saveEdits = await this.dialogService.showConfirmationDialog({
+        data: {
+          title: 'Save on refresh',
+          text: 'You have unsaved edits to this entry. Would you like to save them before refreshing?',
+          cancelLabel: 'No',
+          confirmLabel: 'Yes',
+        },
+      });
+
+      if (saveEdits) {
+        await this.saveEntry();
+      }
+    }
+
+    await this.getEntry();
   }
 
   /**
