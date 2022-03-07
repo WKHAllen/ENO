@@ -207,5 +207,28 @@ export class EntryComponent implements OnInit {
   /**
    * Open the entry deletion confirmation dialog.
    */
-  public async openDeleteEntryConfirmationDialog(): Promise<void> {}
+  public async openDeleteEntryConfirmationDialog(): Promise<void> {
+    const confirmed = await this.dialogService.showConfirmationDialog({
+      data: {
+        title: 'Delete notebook entry',
+        text: 'Are you sure you want to delete this notebook entry? This action cannot be undone.',
+      },
+    });
+
+    if (confirmed) {
+      try {
+        await this.entryService.deleteNotebookEntry(
+          this.notebookName,
+          this.notebookKey,
+          this.entryName
+        );
+
+        await this.openNotebook();
+      } catch (err) {
+        this.errorService.showError({
+          message: String(err),
+        });
+      }
+    }
+  }
 }
