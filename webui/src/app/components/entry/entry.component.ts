@@ -15,6 +15,11 @@ import {
   OpenNotebookDialogData,
   OpenNotebookDialogReturn,
 } from '../open-notebook-dialog/open-notebook-dialog.component';
+import {
+  EditEntryDialogComponent,
+  EditEntryDialogData,
+  EditEntryDialogReturn,
+} from '../edit-entry-dialog/edit-entry-dialog.component';
 
 /**
  * View and edit a notebook entry.
@@ -178,7 +183,26 @@ export class EntryComponent implements OnInit {
   /**
    * Open the entry edit dialog.
    */
-  public async openEditEntryDialog(): Promise<void> {}
+  public async openEditEntryDialog(): Promise<void> {
+    try {
+      const result = await this.dialogService.showDialog<
+        EditEntryDialogComponent,
+        EditEntryDialogData,
+        EditEntryDialogReturn
+      >(EditEntryDialogComponent, {
+        data: {
+          notebookName: this.notebookName,
+          notebookKey: this.notebookKey,
+          entryName: this.entryName,
+        },
+      });
+
+      await this.router.navigate(
+        ['notebook', this.notebookName, 'entry', result.entryName],
+        { queryParams: { key: this.notebookKey } }
+      );
+    } catch (_) {}
+  }
 
   /**
    * Open the entry deletion confirmation dialog.

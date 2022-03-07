@@ -187,9 +187,9 @@ export class NotebookComponent implements OnInit {
         },
       });
 
-      this.notebookName = result.notebookName;
-      this.notebookKey = result.notebookKey;
-      await this.getNotebook();
+      await this.router.navigate(['notebook', result.notebookName], {
+        queryParams: { key: result.notebookKey },
+      });
     } catch (_) {}
   }
 

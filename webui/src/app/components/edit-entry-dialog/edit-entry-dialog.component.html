@@ -1,0 +1,38 @@
+<h1 class="text-center">Edit notebook entry</h1>
+<mat-dialog-content>
+  <p>The notebook entry details can be modified below.</p>
+  <form
+    #editEntryForm="ngForm"
+    id="editEntryForm"
+    (ngSubmit)="editEntry(editEntryForm.value)"
+  >
+    <mat-form-field
+      [appearance]="formAppearance"
+      class="max-width"
+      matTooltip="The name of the notebook entry"
+    >
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        type="text"
+        id="entryName"
+        name="entryName"
+        [minLength]="notebookConstants.entryNameMinLength"
+        [maxLength]="notebookConstants.entryNameMaxLength"
+        [ngModel]="entryName"
+      />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    form="editEntryForm"
+    [disabled]="!editEntryForm.form.valid"
+  >
+    Edit
+  </button>
+</mat-dialog-actions>

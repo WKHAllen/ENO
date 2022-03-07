@@ -33,6 +33,7 @@ import { EditNotebookDialogComponent } from './components/edit-notebook-dialog/e
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { EntryComponent } from './components/entry/entry.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
+import { EditEntryDialogComponent } from './components/edit-entry-dialog/edit-entry-dialog.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -57,10 +58,11 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     OpenNotebookDialogComponent,
     CreateEntryDialogComponent,
     EditNotebookDialogComponent,
-    NullableDatePipe,
     ConfirmationDialogComponent,
     EntryComponent,
     MarkdownEditorComponent,
+    EditEntryDialogComponent,
+    NullableDatePipe,
   ],
   imports: [
     BrowserModule,
