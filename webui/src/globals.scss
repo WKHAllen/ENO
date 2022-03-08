@@ -158,6 +158,12 @@ a.text-link {
     max-width: 100%;
     max-height: 800px;
   }
+
+  pre {
+    padding: 16px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .action-card {
