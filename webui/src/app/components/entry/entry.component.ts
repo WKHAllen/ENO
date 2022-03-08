@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { NotebookService } from '../../services/notebook/notebook.service';
@@ -185,6 +185,7 @@ export class EntryComponent implements OnInit {
   /**
    * Save the entry content.
    */
+  @HostListener('window:keydown.control.s')
   public async saveEntry(): Promise<void> {
     try {
       this.entry = await this.entryService.setNotebookEntryContent(
