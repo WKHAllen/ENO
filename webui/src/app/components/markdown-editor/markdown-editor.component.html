@@ -1,23 +1,25 @@
 <div class="markdown-editor">
   <div
     class="editor"
-    [ngClass]="{ expand: editorState === 'EDITOR' || editorState === 'BOTH' }"
+    [ngClass]="{
+      expand: editorState === 'EDITOR' || editorState === 'BOTH',
+      divider: editorState === 'BOTH'
+    }"
   >
     <div class="editor-actions">
       <button
-        *ngIf="editorState === 'VIEWER'"
-        mat-icon-button
-        (click)="setEditorState('BOTH')"
-        matTooltip="Expand editor"
-      >
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-      <button
-        *ngIf="editorState !== 'VIEWER'"
+        *ngIf="editorState === 'BOTH'"
         mat-icon-button
         (click)="setEditorState('VIEWER')"
         matTooltip="Hide editor"
-        [disabled]="editorState === 'EDITOR'"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        *ngIf="editorState === 'EDITOR'"
+        mat-icon-button
+        (click)="setEditorState('BOTH')"
+        matTooltip="Expand viewer"
       >
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -44,19 +46,18 @@
   >
     <div class="viewer-actions">
       <button
-        *ngIf="editorState === 'EDITOR'"
-        mat-icon-button
-        (click)="setEditorState('BOTH')"
-        matTooltip="Expand viewer"
-      >
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <button
-        *ngIf="editorState !== 'EDITOR'"
+        *ngIf="editorState === 'BOTH'"
         mat-icon-button
         (click)="setEditorState('EDITOR')"
         matTooltip="Hide viewer"
-        [disabled]="editorState === 'VIEWER'"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button
+        *ngIf="editorState === 'VIEWER'"
+        mat-icon-button
+        (click)="setEditorState('BOTH')"
+        matTooltip="Expand editor"
       >
         <mat-icon>chevron_right</mat-icon>
       </button>

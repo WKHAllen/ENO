@@ -8,9 +8,9 @@ $editor-padding: 16px;
 
   .editor {
     flex-grow: 0;
-    border-right: 1px solid globals.$action-card-border-color;
     display: flex;
     flex-direction: column;
+    display: none;
 
     .editor-actions {
       flex-grow: 0;
@@ -22,16 +22,16 @@ $editor-padding: 16px;
     .editor-content {
       flex-grow: 1;
       padding: $editor-padding;
-      display: none;
     }
 
     &.expand {
       flex-grow: 1;
       flex-basis: 100%;
+      display: block;
+    }
 
-      .editor-content {
-        display: block;
-      }
+    &.divider {
+      border-right: 1px solid globals.$action-card-border-color;
     }
   }
 
@@ -39,6 +39,7 @@ $editor-padding: 16px;
     flex-grow: 0;
     display: flex;
     flex-direction: column;
+    display: none;
 
     .viewer-actions {
       flex-grow: 0;
@@ -50,16 +51,12 @@ $editor-padding: 16px;
     .viewer-content {
       flex-grow: 1;
       padding: $editor-padding;
-      display: none;
     }
 
     &.expand {
       flex-grow: 1;
       flex-basis: 100%;
-
-      .viewer-content {
-        display: block;
-      }
+      display: block;
     }
   }
 }
