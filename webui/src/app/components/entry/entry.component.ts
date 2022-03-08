@@ -84,10 +84,10 @@ export class EntryComponent implements OnInit {
               },
             });
 
-            this.notebook = result.notebook;
-            this.notebookKey = result.notebookKey;
-
-            await this.getEntry();
+            await this.router.navigate(
+              ['notebook', this.notebookName, 'entry', this.entryName],
+              { queryParams: { key: result.notebookKey } }
+            );
           } catch (_) {
             this.location.back();
           }
