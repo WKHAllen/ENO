@@ -1,0 +1,46 @@
+@use "../../../globals";
+
+.notebook-search {
+  padding: 16px;
+  max-width: globals.$app-max-width;
+  margin: 0 auto;
+
+  .notebook-search-card {
+    .search {
+      width: 100%;
+      padding: 8px;
+
+      .search-form {
+      }
+
+      .search-results {
+        width: 100%;
+
+        .results {
+          margin-top: 8px;
+          border-collapse: collapse;
+          width: 100%;
+
+          tr > * {
+            padding: 8px;
+          }
+
+          .result {
+            cursor: pointer;
+            transition: background-color 0.1s linear;
+
+            &:hover {
+              background-color: rgba(0, 0, 0, 8%);
+            }
+
+            .result-name,
+            .result-create-time,
+            .result-edit-time {
+              @include globals.line-cutoff(1);
+            }
+          }
+        }
+      }
+    }
+  }
+}

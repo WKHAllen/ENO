@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
+import { EntryService } from '../../services/entry/entry.service';
 import { ErrorService } from '../../services/error/error.service';
 import { DialogService } from '../../services/dialog/dialog.service';
 import {
@@ -11,38 +12,41 @@ import {
   OpenNotebookDialogReturn,
 } from '../open-notebook-dialog/open-notebook-dialog.component';
 import {
-  CreateEntryDialogComponent,
-  CreateEntryDialogData,
-  CreateEntryDialogReturn,
-} from '../create-entry-dialog/create-entry-dialog.component';
-import {
-  EditNotebookDialogComponent,
-  EditNotebookDialogData,
-  EditNotebookDialogReturn,
-} from '../edit-notebook-dialog/edit-notebook-dialog.component';
-import {
   DecryptedNotebook,
   NotebookDetails,
   NotebookEntry,
 } from '../../services/notebook/notebook.interface';
-import { sortData } from '../../util';
+import { NotebookEntryMap } from '../../services/entry/entry.interface';
+import { sortData, notebookConstants, formAppearance } from '../../util';
 
 /**
- * View and edit a notebook.
+ * The notebook search form.
+ */
+interface NotebookSearchForm {
+  query: string;
+  regexSearch: boolean;
+}
+
+/**
+ * Search through a notebook's entries.
  */
 @Component({
-  selector: 'eno-notebook',
-  templateUrl: './notebook.component.html',
-  styleUrls: ['./notebook.component.scss'],
+  selector: 'eno-notebook-search',
+  templateUrl: './notebook-search.component.html',
+  styleUrls: ['./notebook-search.component.scss'],
 })
-export class NotebookComponent implements OnInit {
+export class NotebookSearchComponent implements OnInit {
   public loading = true;
   private notebookName = '';
   private notebookKey = '';
   public notebookDetails: NotebookDetails | undefined;
   public notebook: DecryptedNotebook | undefined;
-  public sortedEntries: NotebookEntry[] = [];
-  public numEntries = 0;
+  public searchResults: NotebookEntryMap = {};
+  public sortedSearchResults: NotebookEntry[] = [];
+  public numResults = 0;
+  public searched = false;
+  public notebookConstants = notebookConstants;
+  public formAppearance = formAppearance;
 
   constructor(
     private readonly router: Router,
@@ -50,6 +54,7 @@ export class NotebookComponent implements OnInit {
     private readonly location: Location,
     private readonly dialogService: DialogService,
     private readonly notebookService: NotebookService,
+    private readonly entryService: EntryService,
     private readonly errorService: ErrorService
   ) {}
 
@@ -87,9 +92,12 @@ export class NotebookComponent implements OnInit {
               },
             });
 
-            await this.router.navigate(['notebook', this.notebookName], {
-              queryParams: { key: result.notebookKey },
-            });
+            await this.router.navigate(
+              ['notebook', this.notebookName, 'search'],
+              {
+                queryParams: { key: result.notebookKey },
+              }
+            );
           } catch (_) {
             this.location.back();
           }
@@ -111,8 +119,6 @@ export class NotebookComponent implements OnInit {
         this.notebookName,
         this.notebookKey
       );
-      this.sortedEntries = Object.values(this.notebook.content.entries);
-      this.numEntries = Object.keys(this.notebook.content.entries).length;
     } catch (err) {
       this.errorService.showError({
         message: String(err),
@@ -128,12 +134,21 @@ export class NotebookComponent implements OnInit {
    * @param sort The sort parameters.
    */
   public sortEntries(sort: Sort): void {
-    if (this.notebook) {
-      this.sortedEntries = sortData(
-        Object.values(this.notebook.content.entries),
+    if (this.numResults > 0) {
+      this.sortedSearchResults = sortData(
+        Object.values(this.searchResults),
         sort
       );
     }
+  }
+
+  /**
+   * Return to the notebook.
+   */
+  public async openNotebook(): Promise<void> {
+    await this.router.navigate(['notebook', this.notebookName], {
+      queryParams: { key: this.notebookKey },
+    });
   }
 
   /**
@@ -149,82 +164,32 @@ export class NotebookComponent implements OnInit {
   }
 
   /**
-   * Open the entry creation dialog.
+   * Search the entries for a given query string.
+   *
+   * @param form The notebook search form.
    */
-  public async openCreateEntryDialog(): Promise<void> {
-    try {
-      const result = await this.dialogService.showDialog<
-        CreateEntryDialogComponent,
-        CreateEntryDialogData,
-        CreateEntryDialogReturn
-      >(CreateEntryDialogComponent, {
-        data: {
-          notebookName: this.notebookName,
-          notebookKey: this.notebookKey,
-        },
-      });
-
-      await this.openEntry(result.entry.name);
-    } catch (_) {}
-  }
-
-  /**
-   * Go to the notebook search page.
-   */
-  public async openSearchEntriesPage(): Promise<void> {
-    await this.router.navigate(['notebook', this.notebookName, 'search'], {
-      queryParams: { key: this.notebookKey },
-    });
-  }
-
-  /**
-   * Open the notebook editing dialog.
-   */
-  public async openEditNotebookDialog(): Promise<void> {
-    try {
-      const result = await this.dialogService.showDialog<
-        EditNotebookDialogComponent,
-        EditNotebookDialogData,
-        EditNotebookDialogReturn
-      >(EditNotebookDialogComponent, {
-        data: {
-          notebookName: this.notebookName,
-          notebookDescription: (this.notebook?.description ||
-            this.notebookDetails?.description) as string,
-          notebookKey: this.notebookKey,
-        },
-      });
-
-      await this.router.navigate(['notebook', result.notebookName], {
-        queryParams: { key: result.notebookKey },
-      });
-    } catch (_) {}
-  }
-
-  /**
-   * Open the notebook deletion confirmation dialog.
-   */
-  public async openDeleteNotebookConfirmationDialog(): Promise<void> {
-    const confirmed = await this.dialogService.showConfirmationDialog({
-      data: {
-        title: 'Delete notebook',
-        text: 'Are you sure you want to delete this notebook? This action cannot be undone.',
-      },
-    });
-
-    if (confirmed) {
+  public async searchEntries(form: NotebookSearchForm): Promise<void> {
+    if (form.query.length > 0) {
       try {
-        await this.notebookService.deleteNotebook(
+        this.searchResults = await this.entryService.searchNotebookEntries(
           this.notebookName,
-          this.notebookKey
+          this.notebookKey,
+          form.query,
+          form.regexSearch
         );
-
-        await this.router.navigate(['/']);
+        this.sortedSearchResults = Object.values(this.searchResults);
+        this.numResults = Object.keys(this.searchResults).length;
+        this.searched = true;
       } catch (err) {
         this.errorService.showError({
           message: String(err),
         });
       }
+    } else {
+      this.searchResults = {};
+      this.sortedSearchResults = [];
+      this.numResults = 0;
+      this.searched = false;
     }
   }
 }

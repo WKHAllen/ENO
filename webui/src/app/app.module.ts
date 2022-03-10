@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +35,7 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { EntryComponent } from './components/entry/entry.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 import { EditEntryDialogComponent } from './components/edit-entry-dialog/edit-entry-dialog.component';
+import { NotebookSearchComponent } from './components/notebook-search/notebook-search.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -63,6 +65,7 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     MarkdownEditorComponent,
     EditEntryDialogComponent,
     NullableDatePipe,
+    NotebookSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +74,7 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     BrowserAnimationsModule,
     AppRoutingModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,

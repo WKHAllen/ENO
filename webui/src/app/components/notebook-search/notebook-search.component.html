@@ -1,0 +1,93 @@
+<div *ngIf="!loading; else loadingTemplate" class="notebook-search">
+  <div>
+    <h1 class="text-center">Search notebook</h1>
+    <p class="text-center">
+      {{ notebook?.name || notebookDetails?.name || "Notebook" }}
+    </p>
+  </div>
+  <eno-action-card *ngIf="notebook" class="notebook-search-card">
+    <div>
+      <button mat-icon-button (click)="openNotebook()" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+    <div class="search">
+      <div class="search-form">
+        <form
+          #notebookSearchForm="ngForm"
+          id="notebookSearchForm"
+          (ngSubmit)="searchEntries(notebookSearchForm.value)"
+        >
+          <mat-form-field
+            [appearance]="formAppearance"
+            class="max-width"
+            matTooltip="The search query"
+          >
+            <mat-label>Query</mat-label>
+            <input
+              matInput
+              type="text"
+              id="query"
+              name="query"
+              [minLength]="notebookConstants.entryQueryMinLength"
+              [maxLength]="notebookConstants.entryQueryMaxLength"
+              ngModel
+              (ngModelChange)="notebookSearchForm.ngSubmit.emit()"
+            />
+          </mat-form-field>
+          <section>
+            <mat-checkbox
+              color="primary"
+              id="regexSearch"
+              name="regexSearch"
+              ngModel
+              (ngModelChange)="notebookSearchForm.ngSubmit.emit()"
+              >Regex search</mat-checkbox
+            >
+          </section>
+        </form>
+      </div>
+      <div *ngIf="searched" class="search-results">
+        <table
+          *ngIf="numResults > 0; else noResultsTemplate"
+          matSort
+          (matSortChange)="sortEntries($event)"
+          class="results"
+        >
+          <tr>
+            <th mat-sort-header="name">Entry name</th>
+            <th mat-sort-header="createTime">Created</th>
+            <th mat-sort-header="editTime">Edited</th>
+          </tr>
+          <tr
+            *ngFor="let result of sortedSearchResults"
+            class="result"
+            (click)="openEntry(result.name)"
+          >
+            <td>
+              <span class="result-name">{{ result.name }}</span>
+            </td>
+            <td>
+              <span class="result-create-time">{{
+                result.createTime | nullableDate: "Never":"medium"
+              }}</span>
+            </td>
+            <td>
+              <span class="result-edit-time">{{
+                result.editTime | nullableDate: "Never":"medium"
+              }}</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </eno-action-card>
+</div>
+
+<ng-template #loadingTemplate>
+  <eno-spinner></eno-spinner>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+  <eno-info>No results match your query</eno-info>
+</ng-template>
