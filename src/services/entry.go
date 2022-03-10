@@ -267,13 +267,13 @@ func SearchNotebookEntries(notebookName string, notebookKey string, query string
 			nameMatch, err := regexp.MatchString(query, entryName)
 			if err != nil {
 				log.Printf("Error occurred performing notebook entry name regex search (%s): %s", filepath, err)
-				return nil, fmt.Errorf("an unexpected error occurred while searching the notebook, check the logs for more details")
+				return nil, fmt.Errorf("%s", err)
 			}
 
 			contentMatch, err := regexp.MatchString(query, entry.Content)
 			if err != nil {
 				log.Printf("Error occurred performing notebook entry content regex search (%s): %s", filepath, err)
-				return nil, fmt.Errorf("an unexpected error occurred while searching the notebook, check the logs for more details")
+				return nil, fmt.Errorf("%s", err)
 			}
 
 			if nameMatch || contentMatch {
