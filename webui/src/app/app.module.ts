@@ -36,6 +36,7 @@ import { EntryComponent } from './components/entry/entry.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 import { EditEntryDialogComponent } from './components/edit-entry-dialog/edit-entry-dialog.component';
 import { NotebookSearchComponent } from './components/notebook-search/notebook-search.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { APIService } from './services/api/api.service';
 import { NotebookService } from './services/notebook/notebook.service';
@@ -64,8 +65,9 @@ import { NullableDatePipe } from './pipes/nullable-date/nullable-date.pipe';
     EntryComponent,
     MarkdownEditorComponent,
     EditEntryDialogComponent,
-    NullableDatePipe,
     NotebookSearchComponent,
+    NotFoundComponent,
+    NullableDatePipe,
   ],
   imports: [
     BrowserModule,

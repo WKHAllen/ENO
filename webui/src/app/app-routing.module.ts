@@ -5,6 +5,7 @@ import { HomeComponent } from './components/home/home.component';
 import { NotebookComponent } from './components/notebook/notebook.component';
 import { EntryComponent } from './components/entry/entry.component';
 import { NotebookSearchComponent } from './components/notebook-search/notebook-search.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 /**
  * App routing configuration.
@@ -17,6 +18,7 @@ const routes: Routes = [
     component: EntryComponent,
   },
   { path: 'notebook/:notebookName/search', component: NotebookSearchComponent },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
