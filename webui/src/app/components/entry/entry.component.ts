@@ -60,6 +60,7 @@ export class EntryComponent implements OnInit {
         );
 
         this.loading = false;
+        this.errorService.close();
       } catch (err) {
         this.errorService.showError({
           message: String(err),
@@ -111,6 +112,7 @@ export class EntryComponent implements OnInit {
         this.entryName
       );
       this.entryEditorContent = this.entry.content;
+      this.errorService.close();
     } catch (err) {
       this.errorService.showError({
         message: String(err),
@@ -194,6 +196,7 @@ export class EntryComponent implements OnInit {
         this.entryName,
         this.entryEditorContent ?? ''
       );
+      this.errorService.close();
     } catch (err) {
       this.errorService.showError({
         message: String(err),
@@ -244,6 +247,7 @@ export class EntryComponent implements OnInit {
           this.entryName
         );
 
+        this.errorService.close();
         await this.openNotebook();
       } catch (err) {
         this.errorService.showError({

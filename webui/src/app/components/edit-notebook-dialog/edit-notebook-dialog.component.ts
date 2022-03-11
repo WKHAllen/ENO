@@ -69,6 +69,7 @@ export class EditNotebookDialogComponent {
    * @param result The resulting data to be returned when the dialog closes.
    */
   public close(result?: EditNotebookDialogReturn): void {
+    this.errorService.close();
     this.dialogRef.close(result);
   }
 
@@ -126,7 +127,9 @@ export class EditNotebookDialogComponent {
         notebookKey,
       });
     } catch (err) {
-      this.errorService.showError({ message: String(err) });
+      this.errorService.showError({
+        message: String(err),
+      });
     }
   }
 }

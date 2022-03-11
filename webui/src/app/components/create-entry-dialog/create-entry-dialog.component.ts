@@ -55,6 +55,7 @@ export class CreateEntryDialogComponent {
    * @param result The resulting data to be returned when the dialog closes.
    */
   public close(result?: CreateEntryDialogReturn): void {
+    this.errorService.close();
     this.dialogRef.close(result);
   }
 
@@ -73,7 +74,9 @@ export class CreateEntryDialogComponent {
 
       this.close({ entry });
     } catch (err) {
-      this.errorService.showError({ message: String(err) });
+      this.errorService.showError({
+        message: String(err),
+      });
     }
   }
 }

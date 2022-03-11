@@ -59,6 +59,7 @@ export class OpenNotebookDialogComponent {
    * @param result The resulting data to be returned when the dialog closes.
    */
   public close(result?: OpenNotebookDialogReturn): void {
+    this.errorService.close();
     this.dialogRef.close(result);
   }
 

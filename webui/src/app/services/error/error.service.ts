@@ -53,4 +53,11 @@ export class ErrorService {
       panelClass: cssClass,
     });
   }
+
+  /**
+   * Close the active error message.
+   */
+  public close(): void {
+    this.snackBar.dismiss();
+  }
 }

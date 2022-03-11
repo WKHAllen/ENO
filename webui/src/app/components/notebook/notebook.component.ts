@@ -63,6 +63,7 @@ export class NotebookComponent implements OnInit {
         );
 
         this.loading = false;
+        this.errorService.close();
       } catch (err) {
         this.errorService.showError({
           message: String(err),
@@ -113,6 +114,7 @@ export class NotebookComponent implements OnInit {
       );
       this.sortedEntries = Object.values(this.notebook.content.entries);
       this.numEntries = Object.keys(this.notebook.content.entries).length;
+      this.errorService.close();
     } catch (err) {
       this.errorService.showError({
         message: String(err),
@@ -219,6 +221,7 @@ export class NotebookComponent implements OnInit {
           this.notebookKey
         );
 
+        this.errorService.close();
         await this.router.navigate(['/']);
       } catch (err) {
         this.errorService.showError({

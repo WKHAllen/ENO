@@ -68,6 +68,7 @@ export class NotebookSearchComponent implements OnInit {
         );
 
         this.loading = false;
+        this.errorService.close();
       } catch (err) {
         this.errorService.showError({
           message: String(err),
@@ -119,6 +120,7 @@ export class NotebookSearchComponent implements OnInit {
         this.notebookName,
         this.notebookKey
       );
+      this.errorService.close();
     } catch (err) {
       this.errorService.showError({
         message: String(err),
@@ -180,6 +182,7 @@ export class NotebookSearchComponent implements OnInit {
         this.sortedSearchResults = Object.values(this.searchResults);
         this.numResults = Object.keys(this.searchResults).length;
         this.searched = true;
+        this.errorService.close();
       } catch (err) {
         this.errorService.showError({
           message: String(err),
