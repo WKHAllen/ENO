@@ -11,13 +11,13 @@ goto :eof
 
 rem Build for debug
 :builddebug
-cmd /c go-winres simply --icon webui/src/favicon.ico --manifest gui
+cmd /c go-winres simply --icon webui/src/favicon.ico --manifest gui --admin
 cmd /c go build -o build
 goto :run
 
 rem Build for release
 :buildrelease
-cmd /c go-winres simply --icon webui/src/favicon.ico --manifest gui
+cmd /c go-winres simply --icon webui/src/favicon.ico --manifest gui --admin
 cmd /c go build -o build -ldflags "-H windowsgui"
 goto :eof
 

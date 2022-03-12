@@ -43,7 +43,10 @@ export class NotebookService {
    * @returns All encrypted notebooks.
    */
   public async listNotebooks(): Promise<EncryptedNotebook[]> {
-    return this.api.get<EncryptedNotebook[]>(this.subPath + '/all');
+    const notebooks = await this.api.get<EncryptedNotebook[]>(
+      this.subPath + '/all'
+    );
+    return notebooks ?? [];
   }
 
   /**
