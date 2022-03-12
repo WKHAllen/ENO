@@ -18,8 +18,12 @@ export class SettingsService {
    *
    * @returns The app settings.
    */
-  public getSettings(): Promise<Settings> {
-    return this.api.get<Settings>(this.subPath + '/all');
+  public async getSettings(): Promise<Settings> {
+    const settings = await this.api.get<Settings>(this.subPath + '/all');
+    return Object.keys(settings).reduce((acc, current) => {
+      acc[current] = JSON.parse(settings[current]);
+      return acc;
+    }, {} as Settings);
   }
 
   /**
@@ -28,8 +32,9 @@ export class SettingsService {
    * @param key The option key.
    * @returns The option value.
    */
-  public getSettingsOption<T>(key: string): Promise<T> {
-    return this.api.get<T>(this.subPath, { key });
+  public async getSettingsOption<T>(key: string): Promise<T | undefined> {
+    const stringValue = await this.api.get<string>(this.subPath, { key });
+    return stringValue ? JSON.parse(stringValue) : undefined;
   }
 
   /**
@@ -38,8 +43,9 @@ export class SettingsService {
    * @param key The option key.
    * @param value The option value.
    */
-  public setSettingsOption<T>(key: string, value: T): Promise<void> {
-    return this.api.patch(this.subPath, { key, value });
+  public async setSettingsOption<T>(key: string, value: T): Promise<void> {
+    const stringValue = JSON.stringify(value);
+    return this.api.patch(this.subPath, { key, value: stringValue });
   }
 
   /**
@@ -47,7 +53,7 @@ export class SettingsService {
    *
    * @param key The option key.
    */
-  public deleteSettingsOption(key: string): Promise<void> {
+  public async deleteSettingsOption(key: string): Promise<void> {
     return this.api.delete(this.subPath, { key });
   }
 }

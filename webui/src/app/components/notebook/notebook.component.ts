@@ -5,6 +5,7 @@ import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
 import { ErrorService } from '../../services/error/error.service';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import {
   OpenNotebookDialogComponent,
   OpenNotebookDialogData,
@@ -43,6 +44,10 @@ export class NotebookComponent implements OnInit {
   public notebook: DecryptedNotebook | undefined;
   public sortedEntries: NotebookEntry[] = [];
   public numEntries = 0;
+  private sort: Sort = {
+    active: 'editTime',
+    direction: 'desc',
+  };
 
   constructor(
     private readonly router: Router,
@@ -50,7 +55,8 @@ export class NotebookComponent implements OnInit {
     private readonly location: Location,
     private readonly dialogService: DialogService,
     private readonly notebookService: NotebookService,
-    private readonly errorService: ErrorService
+    private readonly errorService: ErrorService,
+    private readonly settingsService: SettingsService
   ) {}
 
   public ngOnInit(): void {
@@ -75,7 +81,16 @@ export class NotebookComponent implements OnInit {
         this.notebookKey = queryParamMap.get('key') || '';
 
         if (this.notebookKey !== '') {
+          const sort = await this.settingsService.getSettingsOption<Sort>(
+            'EntrySort'
+          );
+
+          if (sort) {
+            this.sort = sort;
+          }
+
           await this.getNotebook();
+          await this.sortEntries();
         } else {
           try {
             const result = await this.dialogService.showDialog<
@@ -129,12 +144,17 @@ export class NotebookComponent implements OnInit {
    *
    * @param sort The sort parameters.
    */
-  public sortEntries(sort: Sort): void {
+  public async sortEntries(sort?: Sort): Promise<void> {
     if (this.notebook) {
+      if (sort) {
+        this.sort = sort;
+      }
+
       this.sortedEntries = sortData(
         Object.values(this.notebook.content.entries),
-        sort
+        this.sort
       );
+      await this.settingsService.setSettingsOption('EntrySort', this.sort);
     }
   }
 

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import { EncryptedNotebook } from '../../services/notebook/notebook.interface';
 import { CreateNotebookDialogComponent } from '../create-notebook-dialog/create-notebook-dialog.component';
 import { sortData } from '../../util';
@@ -19,16 +20,29 @@ export class HomeComponent implements OnInit {
   public loading = true;
   public notebooks: EncryptedNotebook[] = [];
   public sortedNotebooks: EncryptedNotebook[] = [];
+  private sort: Sort = {
+    active: 'editTime',
+    direction: 'desc',
+  };
 
   constructor(
     private readonly router: Router,
     private readonly dialogService: DialogService,
-    private readonly notebookService: NotebookService
+    private readonly notebookService: NotebookService,
+    private readonly settingsService: SettingsService
   ) {}
 
   public async ngOnInit(): Promise<void> {
+    const sort = await this.settingsService.getSettingsOption<Sort>(
+      'NotebookSort'
+    );
+
+    if (sort) {
+      this.sort = sort;
+    }
+
     await this.getNotebooks();
-    this.loading = false;
+    await this.sortNotebooks();
   }
 
   /**
@@ -63,8 +77,13 @@ export class HomeComponent implements OnInit {
    *
    * @param sort The sort parameters.
    */
-  public sortNotebooks(sort: Sort): void {
-    this.sortedNotebooks = sortData(this.notebooks, sort);
+  public async sortNotebooks(sort?: Sort): Promise<void> {
+    if (sort) {
+      this.sort = sort;
+    }
+
+    this.sortedNotebooks = sortData(this.notebooks, this.sort);
+    await this.settingsService.setSettingsOption('NotebookSort', this.sort);
   }
 
   /**
