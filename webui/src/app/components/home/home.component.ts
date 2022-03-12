@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Sort } from '@angular/material/sort';
 import { NotebookService } from '../../services/notebook/notebook.service';
 import { DialogService } from '../../services/dialog/dialog.service';
+import { ErrorService } from '../../services/error/error.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { EncryptedNotebook } from '../../services/notebook/notebook.interface';
 import { CreateNotebookDialogComponent } from '../create-notebook-dialog/create-notebook-dialog.component';
@@ -27,12 +28,24 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly dialogService: DialogService,
     private readonly notebookService: NotebookService,
+    private readonly errorService: ErrorService,
     private readonly settingsService: SettingsService
   ) {}
 
   public async ngOnInit(): Promise<void> {
+    this.activatedRoute.queryParamMap.subscribe((queryParamMap) => {
+      const err = queryParamMap.get('err');
+
+      if (err) {
+        this.errorService.showError({
+          message: String(err),
+        });
+      }
+    });
+
     const sort = await this.settingsService.getSettingsOption<Sort>(
       'NotebookSort'
     );

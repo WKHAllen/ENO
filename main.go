@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/static"
@@ -30,6 +32,40 @@ func main() {
 	host := "localhost"
 	port := 42607
 	address := fmt.Sprintf("%s://%s:%d", protocol, host, port)
+	openErr := ""
+	if len(os.Args) > 1 {
+		notebookPath := os.Args[1]
+		if !strings.Contains(notebookPath, "/") && !strings.Contains(notebookPath, "\\") {
+			notebookPath = fmt.Sprintf("notebooks/%s", notebookPath)
+		}
+		if !strings.HasSuffix(notebookPath, ".eno") {
+			notebookPath = fmt.Sprintf("%s.eno", notebookPath)
+		}
+		if _, err := os.Stat(notebookPath); !errors.Is(err, fs.ErrNotExist) {
+			notebooksPath, err := filepath.Abs("notebooks")
+			if err == nil {
+				dirname, filename := filepath.Split(notebookPath)
+				argPath, err := filepath.Abs(dirname)
+				if err == nil {
+					if notebooksPath == argPath {
+						notebookName := strings.TrimSuffix(filename, ".eno")
+						address = fmt.Sprintf("%s/notebook/%s", address, notebookName)
+					} else {
+						openErr = fmt.Sprintf("specified notebook is not in notebooks directory: %s", notebookPath)
+					}
+				} else {
+					openErr = fmt.Sprintf("error getting absolute file path: %s", err.Error())
+				}
+			} else {
+				openErr = fmt.Sprintf("error getting absolute file path: %s", err.Error())
+			}
+		} else {
+			openErr = fmt.Sprintf("file does not exist: %s", notebookPath)
+		}
+	}
+	if len(openErr) > 0 {
+		address = fmt.Sprintf("%s?err=%s", address, openErr)
+	}
 	logsDir := "logs"
 	logFile := fmt.Sprintf("%s/%s", logsDir, "full.log")
 	os.Setenv("DEBUG", fmt.Sprint(debug))
