@@ -1,6 +1,6 @@
 #!/bin/bash
 
 chmod +x ./build/eno
-cd eno
+cd build
 ./eno
 cd ..

@@ -15,6 +15,7 @@ if "%1"=="frontend" goto :eof
 
 rem Build backend
 :backend
+cmd /c go-winres simply --icon webui/src/favicon.ico --manifest gui
 cmd /c go build -o build -ldflags "-H windowsgui"
 
 rem End of file

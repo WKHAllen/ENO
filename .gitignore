@@ -58,3 +58,4 @@ go.work
 # Misc
 .env
 todo.txt
+*.syso
